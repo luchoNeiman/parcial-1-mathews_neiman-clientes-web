@@ -9,6 +9,7 @@ import MiPerfil from "../pages/MiPerfil.vue";
 import EditarMiPerfil from "../pages/EditarMiPerfil.vue";
 import PerfilUsuario from "../pages/PerfilUsuario.vue";
 import Registro from "../pages/Registro.vue";
+import Movies from "../pages/Movies.vue";
 
 // Definimos nuestro array de rutas.
 // Cada ruta debe ser un objeto que tenga al menos 2 propiedades:
@@ -19,7 +20,7 @@ import Registro from "../pages/Registro.vue";
 //  queramos asociar con ella.
 const routes = [
     { path: '/',                                    component: Home, }, 
-    { path: '/ingresar',                            component: Login, },   //
+    { path: '/ingresar',                            component: Login, },
     { path: '/crear-cuenta',                        component: Registro, },
     { path: '/chat',                                component: ChatGlobal,       meta: { requiresAuth: true, }, },
     { path: '/mi-perfil',                           component: MiPerfil,         meta: { requiresAuth: true, }, },
