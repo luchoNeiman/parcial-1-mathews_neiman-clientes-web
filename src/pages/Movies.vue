@@ -1,19 +1,29 @@
-<script>
-import { ref, onMounted } from 'vue'
-import { getMovies } from '../services/movies'
-const movies = ref([])
-onMounted(async () => {
-    movies.value = await getMovies()
-})
-</script>
-
 <template>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div v-for="movie in movies" :key="movie.id" class="card">
-            <img :src="movie.poster_url" alt="" class="w-full h-64 object-cover" />
-            <h2 class="text-xl font-bold">{{ movie.title }}</h2>
-            <p class="text-sm text-gray-500">Publicado por: {{ movie.publicado_por }}</p>
-            <RouterLink :to="`/pelicula/${movie.id}`" class="text-blue-500 underline">Ver detalles</RouterLink>
+    <section class="p-6">
+        <h2 class="text-3xl font-bold mb-6 text-center">Películas de Culto</h2>
+
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <MovieCard v-for="movie in movies" :key="movie.id" :movie="movie" />
         </div>
-    </div>
+    </section>
 </template>
+
+<script>
+import { supabase } from '../services/supabase.js'
+import MovieCard from '../components/MovieCard.vue'
+
+export default {
+    name: 'Movies',
+    components: { MovieCard },
+    data() {
+        return {
+            movies: [],
+        }
+    },
+    async created() {
+        const { data, error } = await supabase.from('movies').select('*')
+        if (error) console.error('Error al cargar películas:', error.message)
+        this.movies = data || []
+    },
+}
+</script>

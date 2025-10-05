@@ -5,8 +5,8 @@ export default {
 </script>
 
 <template>
-    <footer class="flex justify-center items-center h-25 bg-slate-900 text-white">
-        <p>Da Vinci &copy; 2025</p>
+    <footer class="w-full text-center p-4 bg-black text-gray-400 text-sm">
+        <p>&copy; 2025 Cine Alternativo - Proyecto académico - Evelyn Mathews y Luciano Neiman</p>
     </footer>
 </template>
 

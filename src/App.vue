@@ -13,10 +13,6 @@ export default {
         <AppNavbar />
     </header>
     <main class="container p-4 mx-auto">
-        <!-- 
-        RouterView es donde se va a montar el componente asociar a la ruta que se
-        esté visitando.
-        -->
         <RouterView />
     </main>
     <AppFooter />

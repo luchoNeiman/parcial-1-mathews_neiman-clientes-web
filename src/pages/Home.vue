@@ -6,11 +6,15 @@ export default {
 </script>
 
 <template>
-    <section class="text-center p-8">
-        <h1 class="text-3xl font-bold mb-4">Bienvenido a la Enciclopedia Alternativa de Cine</h1>
-        <p class="text-lg">Un espacio colaborativo para cinéfilos donde podés descubrir películas de culto, compartir
-            tus experiencias, dejar comentarios y conectar con otros amantes del cine. ¡Sumate a la comunidad y hacé
-            crecer la enciclopedia!</p>
+    <section class="flex flex-col items-center justify-center min-h-screen text-center px-4">
+        <h1 class="text-4xl font-bold mb-4">Cine Alternativo</h1>
+        <p class="max-w-xl text-gray-300">
+            Bienvenido a la enciclopedia de cine alternativo: un espacio donde los fans descubren películas de culto,
+            comparten opiniones y celebran el cine fuera del circuito comercial.
+        </p>
 
+        <router-link to="/movies" class="mt-6 px-6 py-3 bg-blue-600 rounded hover:bg-blue-700 transition">
+            Explorar películas
+        </router-link>
     </section>
 </template>
