@@ -1,29 +1,60 @@
-// src/services/user-profiles.js
-import { supabase } from './supabase.js'
+import { supabase } from './supabase'
 
-export default {
-    async getUserProfile(userId) {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .single()
-        if (error) console.error('Error al obtener perfil:', error.message)
-        return data
-    },
+/**
+ * Obtiene el perfil de un usuario a partir de su ID.
+ * 
+ * @param {String} id 
+ * @returns {Promise<{id: String, email: String, display_name: String|null, bio: String|null, career: String|null}>}
+ */
+export async function getUserProfileById(id) {
+    const { data, error } = await supabase
+        .from('user_profiles')
+        .select()
+        // eq() → WHERE id = {id}
+        .eq('id', id)
+        // limit() → limita la cantidad de registros
+        .limit(1)
+        // single() → retorna un objeto en vez de un array
+        .single()
 
-    async updateUserProfile(userId, fields) {
-        const { error } = await supabase
-            .from('profiles')
-            .update(fields)
-            .eq('id', userId)
-        if (error) console.error('Error al actualizar perfil:', error.message)
-    },
+    if (error) {
+        console.error('[user-profiles.js getUserProfileById] Error al traer el perfil del usuario', id, error)
+        throw new Error(error.message)
+    }
 
-    async createUserProfile(userId, username) {
-        const { error } = await supabase
-            .from('profiles')
-            .insert({ id: userId, username })
-        if (error) console.error('Error al crear perfil:', error.message)
-    },
+    return data
+}
+
+/**
+ * Crea un nuevo perfil de usuario en la tabla `user_profiles`.
+ * 
+ * @param {{id: String, email: String, display_name?: String|null, bio?: String|null, career?: String|null}} data 
+ */
+export async function createUserProfile(data) {
+    const { error } = await supabase
+        .from('user_profiles')
+        .insert(data)
+
+    if (error) {
+        console.error('[user-profiles.js createUserProfile] Error al crear el perfil del usuario', data?.id, error)
+        throw new Error(error.message)
+    }
+}
+
+/**
+ * Actualiza los datos del perfil de un usuario.
+ * 
+ * @param {String} id 
+ * @param {{display_name?: String|null, bio?: String|null, career?: String|null}} data 
+ */
+export async function updateUserProfile(id, data) {
+    const { error } = await supabase
+        .from('user_profiles')
+        .update(data)
+        .eq('id', id)
+
+    if (error) {
+        console.error('[user-profiles.js updateUserProfile] Error al actualizar el perfil del usuario', id, error)
+        throw new Error(error.message)
+    }
 }

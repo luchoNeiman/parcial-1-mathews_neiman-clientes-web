@@ -18,7 +18,7 @@ export default {
 
 
 <template>
-    <section class="p-6">
+    <section class="p-6 mt-20">
         <h2 class="text-3xl font-bold mb-6 text-center">Top 5 Soundtracks</h2>
 
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

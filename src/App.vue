@@ -1,19 +1,30 @@
 <script>
-import AppFooter from './components/AppFooter.vue';
-import AppNavbar from './components/AppNavbar.vue';
+import Footer from './components/Footer.vue';
+import Navbar from './components/Navbar.vue';
 
 export default {
-    name: 'App',
-    components: { AppNavbar, AppFooter},
+  name: 'App',
+  components: { Navbar, Footer },
 }
 </script>
 
-<template>
-    <header>
-        <AppNavbar />
-    </header>
-    <main class="container p-4 mx-auto">
-        <RouterView />
+<!-- <template>
+  <div class="min-h-screen flex flex-col bg-black text-white">
+    <Navbar />
+    <main class="container mx-auto flex-grow p-4 mt-20">
+      <router-view />
     </main>
-    <AppFooter />
+    <Footer />
+  </div>
+</template> -->
+
+
+<template>
+  <div class="min-h-screen bg-[#121212] text-white flex flex-col">
+    <Navbar />
+    <main class="flex-1">
+      <RouterView />
+    </main>
+    <Footer />
+  </div>
 </template>
