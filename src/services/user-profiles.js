@@ -1,20 +1,12 @@
 import { supabase } from './supabase'
 
-/**
- * Obtiene el perfil de un usuario a partir de su ID.
- * 
- * @param {String} id 
- * @returns {Promise<{id: String, email: String, display_name: String|null, bio: String|null, career: String|null}>}
- */
+
 export async function getUserProfileById(id) {
     const { data, error } = await supabase
         .from('user_profiles')
         .select()
-        // eq() → WHERE id = {id}
         .eq('id', id)
-        // limit() → limita la cantidad de registros
         .limit(1)
-        // single() → retorna un objeto en vez de un array
         .single()
 
     if (error) {
@@ -27,8 +19,6 @@ export async function getUserProfileById(id) {
 
 /**
  * Crea un nuevo perfil de usuario en la tabla `user_profiles`.
- * 
- * @param {{id: String, email: String, display_name?: String|null, bio?: String|null, career?: String|null}} data 
  */
 export async function createUserProfile(data) {
     const { error } = await supabase
@@ -41,12 +31,7 @@ export async function createUserProfile(data) {
     }
 }
 
-/**
- * Actualiza los datos del perfil de un usuario.
- * 
- * @param {String} id 
- * @param {{display_name?: String|null, bio?: String|null, career?: String|null}} data 
- */
+
 export async function updateUserProfile(id, data) {
     const { error } = await supabase
         .from('user_profiles')

@@ -10,15 +10,12 @@ let user = {
     career: null,
 }
 
-// Lista de observadores (componentes suscriptos)
 let observers = []
 
 // Apenas se carga este módulo, chequeamos si hay un usuario logueado
 loadCurrentUserAuthState()
 
-/**
- * Carga el estado actual de autenticación al iniciar la app.
- */
+
 async function loadCurrentUserAuthState() {
     const { data, error } = await supabase.auth.getUser()
 
@@ -32,17 +29,13 @@ async function loadCurrentUserAuthState() {
         email: data.user.email,
     })
 
-    // En paralelo, traemos su perfil completo
     fetchFullProfile()
 }
 
-/**
- * Trae los datos del perfil completo del usuario actual desde la tabla profiles.
- */
+
 async function fetchFullProfile() {
     try {
-        const profile = await getUserProfileById(user.id)
-        setUser(profile)
+        setUser(await getUserProfileById(user.id))
     } catch (error) {
         console.error('[auth.js] Error al cargar perfil completo:', error.message)
     }
@@ -52,11 +45,7 @@ async function fetchFullProfile() {
 | AUTH METHODS
 +------------------------------------------------------------------------------*/
 
-/**
- * Registra un nuevo usuario en Supabase Auth.
- * @param {string} email
- * @param {string} password
- */
+
 export async function register(email, password) {
     try {
         const { data, error } = await supabase.auth.signUp({ email, password })
@@ -81,11 +70,7 @@ export async function register(email, password) {
     }
 }
 
-/**
- * Inicia sesión con email y contraseña.
- * @param {string} email
- * @param {string} password
- */
+
 export async function login(email, password) {
     const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -105,25 +90,17 @@ export async function login(email, password) {
     fetchFullProfile()
 }
 
-/**
- * Cierra sesión del usuario actual.
- */
+
 export async function logout() {
     await supabase.auth.signOut()
 
     setUser({
         id: null,
         email: null,
-        display_name: null,
-        bio: null,
-        career: null,
     })
 }
 
-/**
- * Actualiza el perfil del usuario actual (display_name, bio, career).
- * @param {{display_name?: string|null, bio?: string|null, career?: string|null}} data
- */
+
 export async function updateAuthUser(data) {
     try {
         await updateUserProfile(user.id, data)
@@ -137,18 +114,14 @@ export async function updateAuthUser(data) {
 | OBSERVER PATTERN
 +------------------------------------------------------------------------------*/
 
-/**
- * Permite a un componente suscribirse a los cambios del estado del usuario.
- * Retorna una función para cancelar la suscripción.
- * @param {(userState: typeof user) => void} callback
- */
+
 export function subscribeToAuthStateChanges(callback) {
     observers.push(callback)
     notify(callback)
 
     // Retornar función para “desuscribirse”
     return () => {
-        observers = observers.filter((obs) => obs !== callback)
+        observers = observers.filter(obs => callback != obs)
     }
 }
 

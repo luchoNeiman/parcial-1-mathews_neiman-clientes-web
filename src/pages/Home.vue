@@ -10,8 +10,8 @@ export default {
         class="relative min-h-screen flex items-center justify-center text-center text-white overflow-hidden pt-24">
         <!-- VIDEO DE FONDO -->
         <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover brightness-[0.4]">
-            <source src="../../public/cinema-background.mp4" type="video/mp4" />
-            Tu navegador no soporta videos en HTML5.
+            <source src="/cinema-background.mp4" type="video/mp4" />
+            
         </video>
 
         <!-- OVERLAY (capa oscura opcional para mejorar contraste) -->

@@ -11,18 +11,15 @@ export default {
 </script>
 
 <template>
-    <div class="border border-gray-700 p-4 rounded-md flex flex-col items-center">
-        <img :src="movie.poster" :alt="movie.titulo" class="w-full h-64 object-cover rounded" />
-        <h2 class="text-lg font-semibold mt-2">{{ movie.titulo }}</h2>
-
-        <div class="flex justify-between items-center w-full mt-3">
-            <router-link :to="'/movies/' + movie.id" class="text-blue-400 hover:underline">
-                Ver detalles
-            </router-link>
-
-            <LikeButton :movieId="movie.id" />
+    <div
+        class="bg-[#1C1C1C] rounded-lg overflow-hidden shadow-md hover:shadow-xl transition hover:scale-[1.02] border border-gray-800">
+        <img :src="movie.poster" :alt="movie.titulo" class="w-full h-72 object-cover">
+        <div class="p-4">
+            <h3 class="text-xl font-semibold mb-2 text-[#EFB810]">{{ movie.titulo }}</h3>
+            <p class="text-gray-400 text-sm">{{ movie.descripcion.substring(0, 100) }}...</p>
+            <RouterLink :to="'/movies/' + movie.id"
+                class="inline-block mt-4 px-4 py-2 border border-[#EFB810] rounded text-[#EFB810] hover:bg-[#EFB810] hover:text-black transition text-sm font-semibold">
+                Ver más</RouterLink>
         </div>
     </div>
 </template>
-
-

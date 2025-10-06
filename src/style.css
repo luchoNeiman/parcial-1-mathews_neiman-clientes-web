@@ -2,7 +2,7 @@
 
 @layer base {
   body {
-    @apply bg-black text-white;
+    @apply bg-[#121212]  text-white;
   }
 }
 

@@ -5,8 +5,8 @@ import Home from "../pages/Home.vue";
 import Login from "../pages/Login.vue";
 import Register from "../pages/Register.vue";
 import GlobalChat from "../pages/GlobalChat.vue";
-// import MiPerfil from "../pages/MiPerfil.vue";
-// import EditarMiPerfil from "../pages/EditarMiPerfil.vue";
+import MyProfile from "../pages/MyProfile.vue";
+import MyProfileEdit from "../pages/MyProfileEdit.vue";
 // import PerfilUsuario from "../pages/PerfilUsuario.vue";
 import Movies from "../pages/Movies.vue";
 import MovieDetail from "../pages/MovieDetail.vue";
@@ -15,16 +15,16 @@ import Soundtracks from "../pages/Soundtracks.vue";
 
 
 const routes = [
-    { path: '/',                name: 'Home',               component: Home },    
-    { path: '/login',           name: 'Login',              component: Login, },
-    { path: '/register',        name: 'Register',           component: Register, },
-    { path: '/chat',            name: 'GlobalChat',         component: GlobalChat,           meta: { requiresAuth: true, }, },
-    { path: '/movies',          name: 'Movies',             component: Movies, },
-    { path: '/movies/:id',      name: 'MovieDetail',        component: MovieDetail, },
-    { path: '/soundtracks',     name: 'Soundtracks',        component: Soundtracks, },
-    // { path: '/mi-perfil',            component: MiPerfil,              meta: { requiresAuth: true, }, },
-    // { path: '/mi-perfil/editar',     component: EditarMiPerfil,        meta: { requiresAuth: true, }, },
+    { path: '/',                        name: 'Home',                       component: Home },    
+    { path: '/login',                   name: 'Login',                      component: Login, },
+    { path: '/register',                name: 'Register',                   component: Register, },
+    { path: '/mi-perfil',               name: 'MyProfile',                  component: MyProfile,             meta: { requiresAuth: true, }, },
+    { path: '/mi-perfil/editar',        name: 'MyProfileEdit',              component: MyProfileEdit,        meta: { requiresAuth: true, }, },
     // { path: '/usuario/:id',          component: PerfilUsuario,         meta: { requiresAuth: true, }, },
+    { path: '/chat',                    name: 'GlobalChat',                 component: GlobalChat,            meta: { requiresAuth: true, }, },
+    { path: '/movies',                  name: 'Movies',                     component: Movies, },
+    { path: '/movies/:id',              name: 'MovieDetail',                component: MovieDetail, },
+    { path: '/soundtracks',             name: 'Soundtracks',                component: Soundtracks, },
 ];
 
 // Creamos propiamente el router.

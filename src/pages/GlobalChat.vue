@@ -1,17 +1,13 @@
 <script>
 import { subscribeToAuthStateChanges } from '../services/auth'
-import {
-    getMessages as fetchLastGlobalChatMessages,
-    sendMessage as sendGlobalChatMessage,
-    subscribeToMessages as subscribeToNewGlobalChatMessages,
-} from '../services/global-chat'
+import {getMessages, sendMessage, subscribeToMessages} from '../services/global-chat'
 
 let unsubscribeFromAuth = () => { }
 let unsubscribeFromChat = () => { }
 
 export default {
     name: 'GlobalChat',
-    components: {  },
+    components: {},
 
     data() {
         return {
@@ -34,7 +30,7 @@ export default {
             try {
                 if (!this.newMessage.content.trim()) return
 
-                await sendGlobalChatMessage({
+                await sendMessage({
                     sender_id: this.user.id,
                     email: this.user.email,
                     content: this.newMessage.content,
@@ -54,18 +50,18 @@ export default {
     async mounted() {
         // Suscripción a cambios en el estado de autenticación
         unsubscribeFromAuth = subscribeToAuthStateChanges(
-            (newUserState) => (this.user = newUserState)
+            newUserState => this.user = newUserState
         )
 
         // Suscripción a mensajes en tiempo real
-        unsubscribeFromChat = subscribeToNewGlobalChatMessages(async (newMessage) => {
+        unsubscribeFromChat = subscribeToMessages(async newMessage => {
             this.messages.push(newMessage)
             await this.$nextTick()
             this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight
         })
 
         // Cargar mensajes previos
-        this.messages = await fetchLastGlobalChatMessages()
+        this.messages = await getMessages()
 
         // Esperar render y scrollear
         await this.$nextTick()
@@ -73,15 +69,15 @@ export default {
     },
 
     unmounted() {
-        unsubscribeFromAuth()
-        unsubscribeFromChat()
+        unsubscribeFromAuth();
+        unsubscribeFromChat();
     },
 }
 </script>
 
 <template>
-    <section class="p-6 m-20">
-        <h1>Chat Global</h1>
+    <section class="p-6 mt-20">
+        <h1 class="text-center">Chat Global</h1>
 
         <div class="flex flex-col md:flex-row gap-6">
             <!-- Contenedor del chat -->
@@ -124,6 +120,7 @@ export default {
                         Enviar
                     </button>
                 </form>
+
             </section>
         </div>
     </section>
