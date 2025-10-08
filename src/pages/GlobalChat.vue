@@ -1,26 +1,22 @@
 <script>
 import { subscribeToAuthStateChanges } from '../services/auth'
-import {getMessages, sendMessage, subscribeToMessages} from '../services/global-chat'
+import { getMessages, sendMessage, subscribeToMessages } from '../services/global-chat'
 
 let unsubscribeFromAuth = () => { }
 let unsubscribeFromChat = () => { }
 
 export default {
     name: 'GlobalChat',
-    components: {},
 
     data() {
         return {
             messages: [],
-            newMessage: {
-                content: '',
-            },
+            newMessage: { content: '' },
             user: {
                 id: null,
                 email: null,
-                display_name: null,
-                bio: null,
-                career: null,
+                username: null,
+                avatar_url: null,
             },
         }
     },
@@ -30,98 +26,114 @@ export default {
             try {
                 if (!this.newMessage.content.trim()) return
 
-                await sendMessage({
-                    sender_id: this.user.id,
-                    email: this.user.email,
-                    content: this.newMessage.content,
-                })
-            } catch (error) {
-                console.error('[handleSubmit] Error enviando mensaje:', error)
-            }
+                // Enviar mensaje correctamente con los tres parámetros
+                await sendMessage(
+                    this.user.id,
+                    this.user.email,
+                    this.newMessage.content.trim()
+                )
 
-            this.newMessage.content = ''
+                this.newMessage.content = ''
+            } catch (error) {
+                console.error('[GlobalChat.vue] Error al enviar mensaje:', error.message)
+            }
         },
 
         getLinkForUser(senderId) {
             return this.user.id !== senderId ? `/usuario/${senderId}` : '/mi-perfil'
         },
+
+        scrollToBottom() {
+            if (this.$refs.chatContainer) {
+                this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight
+            }
+        },
     },
 
     async mounted() {
-        // Suscripción a cambios en el estado de autenticación
+        // Detectar usuario logueado
         unsubscribeFromAuth = subscribeToAuthStateChanges(
-            newUserState => this.user = newUserState
+            (newUserState) => (this.user = newUserState)
         )
 
-        // Suscripción a mensajes en tiempo real
-        unsubscribeFromChat = subscribeToMessages(async newMessage => {
+        // Suscripción en tiempo real
+        unsubscribeFromChat = subscribeToMessages(async (newMessage) => {
             this.messages.push(newMessage)
             await this.$nextTick()
-            this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight
+            this.scrollToBottom()
         })
 
-        // Cargar mensajes previos
+        // Cargar mensajes iniciales
         this.messages = await getMessages()
-
-        // Esperar render y scrollear
         await this.$nextTick()
-        this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight
+        this.scrollToBottom()
     },
 
     unmounted() {
-        unsubscribeFromAuth();
-        unsubscribeFromChat();
+        unsubscribeFromAuth()
+        unsubscribeFromChat()
     },
 }
 </script>
 
 <template>
-    <section class="p-6 mt-20">
-        <h1 class="text-center">Chat Global</h1>
+    <section
+        class="relative flex flex-col h-[calc(100vh-80px)] bg-gradient-to-br from-[#181824] via-[#23233a] to-[#121212]">
+        <h1 class="text-center text-3xl font-bold text-[#EFB810] py-6 drop-shadow-lg">Chat Global</h1>
 
-        <div class="flex flex-col md:flex-row gap-6">
-            <!-- Contenedor del chat -->
-            <section class="overflow-y-auto flex-1 h-[70vh] p-4 border border-gray-700 rounded bg-[#0f0f0f] text-white"
-                ref="chatContainer">
-                <h2 class="sr-only">Mensajes</h2>
-                <ol class="flex flex-col gap-4">
-                    <li v-for="message in messages" :key="message.id" class="p-3 rounded bg-gray-800">
-                        <div class="mb-1 text-sm">
+        <!-- Contenedor del chat -->
+        <div ref="chatContainer" class="flex-1 overflow-y-auto px-2 pb-36 flex flex-col gap-2"
+            style="scroll-behavior: smooth;">
+            <ol class="flex flex-col gap-3">
+                <li v-for="message in messages" :key="message.id" class="flex items-end"
+                    :class="{ 'justify-end': message.sender_id === user.id, 'justify-start': message.sender_id !== user.id }">
+                    <!-- Avatar del otro usuario -->
+                    <div v-if="message.sender_id !== user.id" class="mr-2">
+                        <img :src="message.avatar_url || '/default-avatar.png'" alt="avatar"
+                            class="w-8 h-8 rounded-full shadow-lg border border-gray-700 object-cover" />
+                    </div>
+
+                    <!-- Burbuja de mensaje -->
+                    <div :class="[
+                        'max-w-[70%] p-3 rounded-2xl shadow-md',
+                        message.sender_id === user.id
+                            ? 'bg-gradient-to-br from-blue-600 to-blue-400 text-white self-end'
+                            : 'bg-gradient-to-br from-gray-100 to-gray-300 text-gray-900 self-start',
+                    ]">
+                        <div class="flex items-center gap-2 mb-1">
                             <RouterLink :to="getLinkForUser(message.sender_id)"
-                                class="font-semibold text-blue-400 hover:underline">
+                                class="font-semibold text-xs text-blue-700 hover:underline">
                                 {{ message.email }}
                             </RouterLink>
-                            <span class="text-gray-400"> dijo:</span>
+                            <span class="text-gray-400 text-xs">
+                                · {{ new Date(message.created_at).toLocaleTimeString() }}
+                            </span>
                         </div>
-                        <div class="mb-1 text-gray-100">{{ message.content }}</div>
-                        <div class="text-xs text-gray-500">{{ message.created_at }}</div>
-                    </li>
-                </ol>
-            </section>
-
-            <!-- Formulario -->
-            <section class="md:w-1/3 bg-[#1a1a1a] p-4 rounded border border-gray-700">
-                <h2 class="mb-4 text-xl font-semibold text-white">Enviar mensaje</h2>
-                <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
-                    <div>
-                        <span class="block mb-1 text-gray-300">Email</span>
-                        <span class="text-gray-400 text-sm">{{ user.email || 'No logueado' }}</span>
+                        <div class="break-words text-base">{{ message.content }}</div>
                     </div>
 
-                    <div>
-                        <label for="content" class="block mb-1 text-gray-300">Mensaje</label>
-                        <textarea id="content"
-                            class="w-full p-2 border border-gray-600 rounded bg-transparent text-white focus:outline-none focus:ring-1 focus:ring-blue-500"
-                            v-model="newMessage.content" placeholder="Escribí algo..."></textarea>
+                    <!-- Avatar propio -->
+                    <div v-if="message.sender_id === user.id" class="ml-2">
+                        <img :src="user.avatar_url || '/default-avatar.png'" alt="avatar"
+                            class="w-8 h-8 rounded-full shadow-lg border border-blue-400 object-cover" />
                     </div>
-
-                    <button type="submit"
-                        class="self-start px-4 py-2 bg-blue-600 hover:bg-blue-700 transition rounded text-white">
-                        Enviar
-                    </button>
-                </form>
-
-            </section>
+                </li>
+            </ol>
         </div>
+
+        <!-- Input del mensaje -->
+        <form @submit.prevent="handleSubmit"
+            class="absolute left-0 right-0 bottom-0 bg-[#23233a]/90 backdrop-blur-lg px-4 py-4 flex items-center gap-3 shadow-2xl"
+            style="z-index: 10;">
+            <img :src="user.avatar_url || '/default-avatar.png'" alt="avatar"
+                class="w-8 h-8 rounded-full border border-blue-400 object-cover hidden md:block" />
+            <textarea v-model="newMessage.content" placeholder="Escribí tu mensaje..." rows="1"
+                class="flex-1 resize-none p-3 border border-gray-600 rounded-2xl bg-[#181824] text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow"
+                maxlength="300"></textarea>
+            <button type="submit"
+                class="px-5 py-2 bg-gradient-to-br from-[#EFB810] to-yellow-400 hover:from-yellow-400 hover:to-[#EFB810] transition rounded-2xl text-gray-900 font-bold shadow-lg">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </form>
     </section>
 </template>

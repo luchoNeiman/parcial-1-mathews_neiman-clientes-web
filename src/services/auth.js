@@ -5,16 +5,19 @@ import { createUserProfile, getUserProfileById, updateUserProfile } from './user
 let user = {
     id: null,
     email: null,
-    display_name: null,
+    username: null,
     bio: null,
-    career: null,
+    avatar_url: null,
+    favorite_genres: null,
+    favorite_directors: null,
+    location: null,
+    verified: false,
 }
 
 let observers = []
 
 // Apenas se carga este módulo, chequeamos si hay un usuario logueado
 loadCurrentUserAuthState()
-
 
 async function loadCurrentUserAuthState() {
     const { data, error } = await supabase.auth.getUser()
@@ -32,10 +35,10 @@ async function loadCurrentUserAuthState() {
     fetchFullProfile()
 }
 
-
 async function fetchFullProfile() {
     try {
-        setUser(await getUserProfileById(user.id))
+        const fullProfile = await getUserProfileById(user.id)
+        setUser(fullProfile)
     } catch (error) {
         console.error('[auth.js] Error al cargar perfil completo:', error.message)
     }
@@ -44,7 +47,6 @@ async function fetchFullProfile() {
 /*------------------------------------------------------------------------------
 | AUTH METHODS
 +------------------------------------------------------------------------------*/
-
 
 export async function register(email, password) {
     try {
@@ -55,21 +57,28 @@ export async function register(email, password) {
             throw new Error(error.message)
         }
 
-        // Crear perfil en la tabla profiles
+        // Crear perfil en user_profiles con los campos por defecto
         await createUserProfile({
             id: data.user.id,
             email: data.user.email,
+            username: email.split('@')[0], // genera un username inicial básico
+            bio: '',
+            avatar_url: null,
+            favorite_genres: '',
+            favorite_directors: '',
+            location: '',
+            verified: false,
         })
 
         setUser({
             id: data.user.id,
             email: data.user.email,
+            username: email.split('@')[0],
         })
     } catch (error) {
         console.error('[auth.js register] Error inesperado:', error.message)
     }
 }
-
 
 export async function login(email, password) {
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -90,16 +99,21 @@ export async function login(email, password) {
     fetchFullProfile()
 }
 
-
 export async function logout() {
     await supabase.auth.signOut()
 
     setUser({
         id: null,
         email: null,
+        username: null,
+        bio: null,
+        avatar_url: null,
+        favorite_genres: null,
+        favorite_directors: null,
+        location: null,
+        verified: false,
     })
 }
-
 
 export async function updateAuthUser(data) {
     try {
@@ -113,7 +127,6 @@ export async function updateAuthUser(data) {
 /*------------------------------------------------------------------------------
 | OBSERVER PATTERN
 +------------------------------------------------------------------------------*/
-
 
 export function subscribeToAuthStateChanges(callback) {
     observers.push(callback)

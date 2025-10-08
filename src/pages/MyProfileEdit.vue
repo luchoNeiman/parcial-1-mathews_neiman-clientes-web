@@ -1,50 +1,73 @@
 <script>
-// import AppLoader from '../components/AppLoader.vue';
-import { subscribeToAuthStateChanges, updateAuthUser } from '../services/auth';
+import { subscribeToAuthStateChanges, updateAuthUser } from '../services/auth'
+import { supabase } from '../services/supabase'
 
-let unsubscribeFromAuth = () => { };
+let unsubscribeFromAuth = () => { }
 
 export default {
     name: 'MyProfileEdit',
-    // components: { AppLoader },
     data() {
         return {
             formData: {
-                display_name: '',
-                bio: '',
-                career: '',
+                username: '',
+                description: '',
+                avatar_url: '',
+                favorite_genres: '',
+                favorite_directors: '',
+                location: '',
             },
+            avatarFile: null,
             loading: false,
-        };
+        }
     },
     methods: {
         async handleSubmit() {
             try {
-                this.loading = true;
-                await updateAuthUser(this.formData);
+                this.loading = true
 
-                // Redirige al perfil después de actualizar
-                this.$router.push('/mi-perfil');
+                // Subir avatar si hay uno nuevo
+                if (this.avatarFile) {
+                    const fileName = `${Date.now()}_${this.avatarFile.name}`
+                    const { data, error } = await supabase.storage
+                        .from('avatars')
+                        .upload(fileName, this.avatarFile)
+                    if (error) throw error
+
+                    const { data: urlData } = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(fileName)
+
+                    this.formData.avatar_url = urlData.publicUrl
+                }
+
+                await updateAuthUser(this.formData)
+                this.$router.push('/mi-perfil')
             } catch (error) {
-                console.error('Error al actualizar el perfil:', error.message);
+                console.error('Error al actualizar perfil:', error.message)
             } finally {
-                this.loading = false;
+                this.loading = false
             }
+        },
+        handleFileChange(event) {
+            this.avatarFile = event.target.files[0]
         },
     },
     mounted() {
         unsubscribeFromAuth = subscribeToAuthStateChanges((newUserState) => {
             this.formData = {
-                display_name: newUserState.display_name || '',
-                bio: newUserState.bio || '',
-                career: newUserState.career || '',
-            };
-        });
+                username: newUserState.username || '',
+                description: newUserState.description || '',
+                avatar_url: newUserState.avatar_url || '',
+                favorite_genres: newUserState.favorite_genres || '',
+                favorite_directors: newUserState.favorite_directors || '',
+                location: newUserState.location || '',
+            }
+        })
     },
     unmounted() {
-        unsubscribeFromAuth();
+        unsubscribeFromAuth()
     },
-};
+}
 </script>
 
 <template>
@@ -53,35 +76,31 @@ export default {
             <h1 class="text-[#EFB810] text-center mb-6">Editar Perfil</h1>
 
             <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
-                <!-- Nombre -->
-                <div>
-                    <label for="display_name" class="block mb-1 text-gray-300">Nombre</label>
-                    <input type="text" id="display_name" v-model="formData.display_name"
-                        class="w-full p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white focus:border-[#EFB810] focus:outline-none" />
+                <div class="flex flex-col items-center">
+                    <img :src="formData.avatar_url || '/default-avatar.png'" alt="avatar"
+                        class="w-24 h-24 rounded-full mb-2 border-2 border-[#EFB810]" />
+                    <input type="file" @change="handleFileChange" accept="image/*" class="text-sm text-gray-400" />
                 </div>
 
-                <!-- Biografía -->
-                <div>
-                    <label for="bio" class="block mb-1 text-gray-300">Biografía</label>
-                    <textarea id="bio" v-model="formData.bio"
-                        class="w-full p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white focus:border-[#EFB810] focus:outline-none"
-                        rows="3"></textarea>
-                </div>
+                <input v-model="formData.username" placeholder="Nombre de usuario"
+                    class="p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white" />
 
-                <!-- Carrera -->
-                <div>
-                    <label for="career" class="block mb-1 text-gray-300">Carrera</label>
-                    <input type="text" id="career" v-model="formData.career"
-                        class="w-full p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white focus:border-[#EFB810] focus:outline-none" />
-                </div>
+                <textarea v-model="formData.description" rows="3" placeholder="Descripción"
+                    class="p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white"></textarea>
+
+                <input v-model="formData.favorite_genres" placeholder="Géneros favoritos"
+                    class="p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white" />
+
+                <input v-model="formData.favorite_directors" placeholder="Directores favoritos"
+                    class="p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white" />
+
+                <input v-model="formData.location" placeholder="Ubicación"
+                    class="p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white" />
 
                 <button type="submit"
-                    class="mt-4 px-4 py-2 rounded bg-[#EFB810] text-black font-semibold hover:bg-yellow-400 transition flex justify-center">
+                    class="mt-4 px-4 py-2 rounded bg-[#EFB810] text-black font-semibold hover:bg-yellow-400 transition">
                     <template v-if="!loading">Guardar cambios</template>
-                    <template v-else>
-                        <!-- <AppLoader /> -->
-                         fdf
-                    </template>
+                    <template v-else>Cargando...</template>
                 </button>
             </form>
 

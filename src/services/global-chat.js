@@ -1,44 +1,80 @@
 import { supabase } from './supabase.js'
 
-
+/**
+ * 📥 Obtener todos los mensajes del chat global.
+ * Retorna los mensajes en orden cronológico ascendente.
+ */
 export async function getMessages() {
-    // Obtener todos los mensajes
-    const { data, error } = await supabase
-        .from('global_chat_messages')
-        .select()
-        .order('created_at', { ascending: true })
-    if (error) {
-        console.error('[global-chat.js getMessages] Error al traer los mensajes iniciales del chat.', error);
-        throw new Error(error.message);
-    } return data || []
+    try {
+        const { data, error } = await supabase
+            .from('chat')
+            .select('*')
+            .order('created_at', { ascending: true })
+
+        if (error) throw error
+
+        return data || []
+    } catch (err) {
+        console.error('[global-chat.js:getMessages] Error al obtener mensajes:', err.message)
+        throw new Error('No se pudieron obtener los mensajes del chat.')
+    }
 }
 
+/**
+ * 💬 Enviar un nuevo mensaje al chat global.
+ * @param {string} sender_id - ID del usuario que envía el mensaje.
+ * @param {string} email - Email del usuario.
+ * @param {string} content - Contenido del mensaje.
+ */
 export async function sendMessage(sender_id, email, content) {
-    // Enviar mensaje nuevo
-    const { error } = await supabase
-        .from('global_chat_messages')
-        .insert({sender_id, email, content })
-    if (error) {
-        console.error('[global-chat.js sendMessage] Error al enviar el nuevo mensaje.', error);
-        throw new Error(error.message);
+    try {
+        if (!sender_id || !email || !content.trim()) {
+            throw new Error('El mensaje no puede estar vacío.')
+        }
+
+        const { error } = await supabase
+            .from('chat')
+            .insert({
+                sender_id,
+                email,
+                content: content.trim(),
+            })
+
+        if (error) throw error
+    } catch (err) {
+        console.error('[global-chat.js:sendMessage] Error al enviar mensaje:', err.message)
+        throw new Error('No se pudo enviar el mensaje.')
     }
 }
 
+/**
+ * 🔄 Suscribirse en tiempo real a nuevos mensajes del chat global.
+ * Llama al callback cada vez que se inserta un nuevo mensaje.
+ * Retorna una función para desuscribirse.
+ */
 export function subscribeToMessages(callback) {
-    // Escuchar mensajes en tiempo real
-    const channel = supabase
-        .channel('global_chat_messages')
-        .on(
-            'postgres_changes',
-            { event: 'INSERT', schema: 'public', table: 'global_chat_messages' },
-            payload => {
-                callback(payload.new)
-            }
-        )
-        .subscribe()
+    try {
+        const channel = supabase
+            .channel('chat')
+            .on(
+                'postgres_changes',
+                { event: 'INSERT', schema: 'public', table: 'chat' },
+                (payload) => {
+                    if (payload?.new) callback(payload.new)
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[global-chat.js] Escuchando mensajes en tiempo real...')
+                }
+            })
 
-    return () => {
-        channel.unsubscribe();
+        return () => {
+            channel.unsubscribe()
+            console.log('[global-chat.js] Suscripción al chat cancelada.')
+        }
+    } catch (err) {
+        console.error('[global-chat.js:subscribeToMessages] Error al suscribirse:', err.message)
+        return () => { }
     }
 }
-

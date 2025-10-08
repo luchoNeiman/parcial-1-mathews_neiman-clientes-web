@@ -10,7 +10,7 @@ import MyProfileEdit from "../pages/MyProfileEdit.vue";
 import UserProfile from "../pages/UserProfile.vue";
 import Movies from "../pages/Movies.vue";
 import MovieDetail from "../pages/MovieDetail.vue";
-import Soundtracks from "../pages/Soundtracks.vue";
+import CreateMoviePost from "../pages/CreateMoviePost.vue";
 // import NotFound from "../pages/NotFound.vue";
 
 
@@ -24,14 +24,10 @@ const routes = [
     { path: '/chat',                    name: 'GlobalChat',                 component: GlobalChat,            meta: { requiresAuth: true, }, },
     { path: '/movies',                  name: 'Movies',                     component: Movies, },
     { path: '/movies/:id',              name: 'MovieDetail',                component: MovieDetail, },
-    { path: '/soundtracks',             name: 'Soundtracks',                component: Soundtracks, },
+    { path: '/movies/crear',            name: 'CreateMoviePost',            component: CreateMoviePost,       meta: { requiresAuth: true, }, },
 ];
 
-// Creamos propiamente el router.
-// A createRouter le pasamos un objeto de 2 propiedades:
-// 1. routes. El array de rutas.
-// 2. history. El modo de manejo del historial de navegación.
-//  Se genera con las funciones createWebHistory o createWebHashHistory.
+
 const router = createRouter({
     // routes: routes,
     history: createWebHistory(),
@@ -56,11 +52,6 @@ router.beforeEach((to, from) => {
     if (to.meta.requiresAuth && user.id === null) {
         return '/login';
     }
-
-    // console.group('🚦 Routes');
-    // console.log('Navegando desde la ruta: ', from);
-    // console.log('Navegando a la ruta: ', to);
-    // console.groupEnd();
 });
 
 export default router;

@@ -50,14 +50,6 @@ export default {
                 </RouterLink>
             </li>
 
-            <li>
-                <RouterLink to="/soundtracks"
-                    class="hover:text-[#EFB810] transition border-b-2 border-transparent hover:border-[#EFB810]"
-                    active-class="text-[#EFB810] border-b-2 border-[#EFB810]">
-                    Bandas Sonoras
-                </RouterLink>
-            </li>
-
             <template v-if="user.id === null">
                 <!-- BOTÓN INGRESAR -->
                 <li>
@@ -82,7 +74,7 @@ export default {
                     <RouterLink to="/chat"
                         class="hover:text-[#EFB810] transition border-b-2 border-transparent hover:border-[#EFB810]"
                         active-class="text-[#EFB810] border-b-2 border-[#EFB810]">
-                        Chat Global
+                        Comunidad
                     </RouterLink>
                 </li>
 
