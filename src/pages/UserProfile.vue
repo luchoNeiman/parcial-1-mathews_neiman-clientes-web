@@ -83,7 +83,7 @@ export default {
                     <!-- Username y acciones -->
                     <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                         <h1 class="text-xl sm:text-2xl font-light">{{ user.username }}</h1>
-                        <div class="flex gap-2">
+                        <div v-if="!user.userId" class="flex gap-2">
                             <button class="px-4 py-1.5 bg-[#EFB810] text-black text-sm font-medium rounded hover:bg-yellow-400 transition">
                                 Seguir
                             </button>
