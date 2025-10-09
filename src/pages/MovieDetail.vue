@@ -153,8 +153,5 @@ export default {
         <div v-else class="flex justify-center items-center h-64">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#EFB810] border-t-transparent"></div>
         </div>
-        <div v-else class="text-center py-10 text-gray-500">
-            Cargando datos de la película...
-        </div>
     </section>
 </template>
