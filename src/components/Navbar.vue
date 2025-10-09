@@ -28,8 +28,8 @@ export default {
         class="flex justify-between items-center px-6 py-4 bg-[#121212] border-b border-gray-800 fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-opacity-95">
 
         <!-- LOGO -->
-        <RouterLink to="/" class="text-[#EFB810] text-2xl font-bold tracking-wide hover:text-yellow-400 transition">
-            Underground Cinema
+        <RouterLink to="/" class="text-[#EFB810] text-2xl font-bold tracking-wide hover:text-yellow-400 transition flex items-center gap-2">
+            Underground Cinema <img src="/favicon.png" alt="Logo" style="width: 3rem;">
         </RouterLink>
 
         <!-- LINKS -->

@@ -10,7 +10,7 @@ export default {
                 id: null,
                 email: null,
                 username: null,
-                description: null,
+                bio: null,
                 avatar_url: null,
                 favorite_genres: null,
                 favorite_directors: null,
@@ -72,7 +72,7 @@ export default {
                     </div>
 
                     <p class="text-gray-400 text-sm mt-1">{{ user.email }}</p>
-                    <p class="text-gray-300 mt-2">{{ user.description || 'Sin descripción todavía...' }}</p>
+                    <p class="text-gray-300 mt-2">{{ user.bio || 'Sin descripción todavía...' }}</p>
 
                     <div class="flex justify-center md:justify-start gap-6 mt-4 text-sm text-gray-400">
                         <div><span class="font-bold text-white">{{ movies.length }}</span> publicaciones</div>

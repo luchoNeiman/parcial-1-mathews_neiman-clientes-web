@@ -21,14 +21,12 @@ export async function getMessages() {
 }
 
 /**
- * 💬 Enviar un nuevo mensaje al chat global.
- * @param {string} sender_id - ID del usuario que envía el mensaje.
- * @param {string} email - Email del usuario.
- * @param {string} content - Contenido del mensaje.
+ * ✉️ Enviar un mensaje nuevo al chat global.
+ * Ahora guarda username y avatar_url además de email.
  */
-export async function sendMessage(sender_id, email, content) {
+export async function sendMessage(sender_id, username, email, content, avatar_url = null) {
     try {
-        if (!sender_id || !email || !content.trim()) {
+        if (!sender_id || !content.trim()) {
             throw new Error('El mensaje no puede estar vacío.')
         }
 
@@ -36,8 +34,10 @@ export async function sendMessage(sender_id, email, content) {
             .from('chat')
             .insert({
                 sender_id,
+                username,
                 email,
                 content: content.trim(),
+                avatar_url,
             })
 
         if (error) throw error
@@ -47,10 +47,9 @@ export async function sendMessage(sender_id, email, content) {
     }
 }
 
-/**
- * 🔄 Suscribirse en tiempo real a nuevos mensajes del chat global.
+/*
+ * 🔔 Suscribirse en tiempo real a nuevos mensajes del chat global.
  * Llama al callback cada vez que se inserta un nuevo mensaje.
- * Retorna una función para desuscribirse.
  */
 export function subscribeToMessages(callback) {
     try {

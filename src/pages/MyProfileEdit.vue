@@ -17,26 +17,33 @@ export default {
                 location: '',
             },
             avatarFile: null,
+            avatarPreview: '',
             loading: false,
         }
     },
     methods: {
+        handleFileChange(event) {
+            const file = event.target.files[0]
+            if (file) {
+                this.avatarFile = file
+                this.avatarPreview = URL.createObjectURL(file)
+            }
+        },
+
         async handleSubmit() {
             try {
                 this.loading = true
 
-                // Subir avatar si hay uno nuevo
+                // Subir nuevo avatar si corresponde
                 if (this.avatarFile) {
-                    const fileName = `${Date.now()}_${this.avatarFile.name}`
-                    const { data, error } = await supabase.storage
+                    const fileName = `${this.formData.username || 'user'}_${Date.now()}_${this.avatarFile.name}`
+                    const { error: uploadError } = await supabase.storage
                         .from('avatars')
-                        .upload(fileName, this.avatarFile)
-                    if (error) throw error
+                        .upload(fileName, this.avatarFile, { cacheControl: '3600', upsert: false })
 
-                    const { data: urlData } = supabase.storage
-                        .from('avatars')
-                        .getPublicUrl(fileName)
+                    if (uploadError) throw uploadError
 
+                    const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName)
                     this.formData.avatar_url = urlData.publicUrl
                 }
 
@@ -44,14 +51,13 @@ export default {
                 this.$router.push('/mi-perfil')
             } catch (error) {
                 console.error('Error al actualizar perfil:', error.message)
+                alert('Error al guardar cambios. Verificá tu conexión o permisos.')
             } finally {
                 this.loading = false
             }
         },
-        handleFileChange(event) {
-            this.avatarFile = event.target.files[0]
-        },
     },
+
     mounted() {
         unsubscribeFromAuth = subscribeToAuthStateChanges((newUserState) => {
             this.formData = {
@@ -62,8 +68,10 @@ export default {
                 favorite_directors: newUserState.favorite_directors || '',
                 location: newUserState.location || '',
             }
+            this.avatarPreview = this.formData.avatar_url
         })
     },
+
     unmounted() {
         unsubscribeFromAuth()
     },
@@ -73,13 +81,22 @@ export default {
 <template>
     <section class="pt-24 px-6 flex flex-col items-center min-h-screen bg-[#121212] text-white">
         <div class="bg-[#1C1C1C] border border-gray-700 rounded-xl shadow-xl p-8 max-w-md w-full">
-            <h1 class="text-[#EFB810] text-center mb-6">Editar Perfil</h1>
+            <h1 class="text-[#EFB810] text-center mb-6 text-2xl font-bold">Editar Perfil ✏️</h1>
 
-            <form @submit.prevent="handleSubmit" class="flex flex-col gap-4">
-                <div class="flex flex-col items-center">
-                    <img :src="formData.avatar_url || '/default-avatar.png'" alt="avatar"
-                        class="w-24 h-24 rounded-full mb-2 border-2 border-[#EFB810]" />
-                    <input type="file" @change="handleFileChange" accept="image/*" class="text-sm text-gray-400" />
+            <form @submit.prevent="handleSubmit" class="flex flex-col gap-5">
+                <!-- Avatar con preview -->
+                <div class="flex flex-col items-center relative">
+                    <div
+                        class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#EFB810] cursor-pointer group">
+                        <img :src="avatarPreview || '/default-avatar.png'" alt="avatar preview"
+                            class="object-cover w-full h-full group-hover:opacity-70 transition" />
+                        <input type="file" accept="image/*" @change="handleFileChange"
+                            class="absolute inset-0 opacity-0 cursor-pointer" />
+                        <div
+                            class="absolute bottom-0 w-full bg-black/50 text-xs text-center py-1 opacity-0 group-hover:opacity-100 transition">
+                            Cambiar foto
+                        </div>
+                    </div>
                 </div>
 
                 <input v-model="formData.username" placeholder="Nombre de usuario"
@@ -99,8 +116,7 @@ export default {
 
                 <button type="submit"
                     class="mt-4 px-4 py-2 rounded bg-[#EFB810] text-black font-semibold hover:bg-yellow-400 transition">
-                    <template v-if="!loading">Guardar cambios</template>
-                    <template v-else>Cargando...</template>
+                    {{ loading ? 'Guardando...' : 'Guardar cambios' }}
                 </button>
             </form>
 

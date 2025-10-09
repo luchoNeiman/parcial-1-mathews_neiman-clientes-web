@@ -29,8 +29,10 @@ export default {
                 // Enviar mensaje correctamente con los tres parámetros
                 await sendMessage(
                     this.user.id,
+                    this.user.username,
                     this.user.email,
-                    this.newMessage.content.trim()
+                    this.newMessage.content.trim(),
+                    this.user.avatar_url || null
                 )
 
                 this.newMessage.content = ''
@@ -87,6 +89,7 @@ export default {
             <ol class="flex flex-col gap-3">
                 <li v-for="message in messages" :key="message.id" class="flex items-end"
                     :class="{ 'justify-end': message.sender_id === user.id, 'justify-start': message.sender_id !== user.id }">
+
                     <!-- Avatar del otro usuario -->
                     <div v-if="message.sender_id !== user.id" class="mr-2">
                         <img :src="message.avatar_url || '/default-avatar.png'" alt="avatar"
@@ -103,7 +106,7 @@ export default {
                         <div class="flex items-center gap-2 mb-1">
                             <RouterLink :to="getLinkForUser(message.sender_id)"
                                 class="font-semibold text-xs text-blue-700 hover:underline">
-                                {{ message.email }}
+                                {{ message.username || message.email.split('@')[0] }}
                             </RouterLink>
                             <span class="text-gray-400 text-xs">
                                 · {{ new Date(message.created_at).toLocaleTimeString() }}
