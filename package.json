@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
     "@tailwindcss/vite": "^4.1.12",
+    "flowbite": "^3.1.2",
     "tailwindcss": "^4.1.12",
     "vue": "^3.5.19",
     "vue-router": "^4.5.1"
