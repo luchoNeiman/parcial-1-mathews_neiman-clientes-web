@@ -10,7 +10,7 @@ export default {
         return {
             formData: {
                 username: '',
-                description: '',
+                bio: '',
                 avatar_url: '',
                 favorite_genres: '',
                 favorite_directors: '',
@@ -62,7 +62,7 @@ export default {
         unsubscribeFromAuth = subscribeToAuthStateChanges((newUserState) => {
             this.formData = {
                 username: newUserState.username || '',
-                description: newUserState.description || '',
+                bio: newUserState.bio || '',
                 avatar_url: newUserState.avatar_url || '',
                 favorite_genres: newUserState.favorite_genres || '',
                 favorite_directors: newUserState.favorite_directors || '',
@@ -102,7 +102,7 @@ export default {
                 <input v-model="formData.username" placeholder="Nombre de usuario"
                     class="p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white" />
 
-                <textarea v-model="formData.description" rows="3" placeholder="Descripción"
+                <textarea v-model="formData.bio" rows="3" placeholder="Descripción"
                     class="p-2 rounded bg-[#2A2A2A] border border-gray-600 text-white"></textarea>
 
                 <input v-model="formData.favorite_genres" placeholder="Géneros favoritos"

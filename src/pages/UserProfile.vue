@@ -55,7 +55,7 @@ export default {
                     </div>
 
                     <p class="text-gray-400 text-sm mt-1">{{ user.email }}</p>
-                    <p class="text-gray-300 mt-2">{{ user.description || 'Sin descripción...' }}</p>
+                    <p class="text-gray-300 mt-2">{{ user.bio || 'Sin descripción...' }}</p>
 
                     <div class="flex justify-center md:justify-start gap-6 mt-4 text-sm text-gray-400">
                         <div><span class="font-bold text-white">{{ movies.length }}</span> publicaciones</div>

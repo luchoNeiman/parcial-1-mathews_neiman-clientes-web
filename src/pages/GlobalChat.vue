@@ -32,7 +32,7 @@ export default {
                     this.user.username,
                     this.user.email,
                     this.newMessage.content.trim(),
-                    this.user.avatar_url || null
+                    this.user.avatar_url
                 )
 
                 this.newMessage.content = ''

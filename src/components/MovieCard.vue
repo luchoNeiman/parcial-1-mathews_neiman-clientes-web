@@ -1,99 +1,172 @@
 <script>
-import { logout, subscribeToAuthStateChanges } from '../services/auth.js'
+import { supabase } from '../services/supabase'
+import { subscribeToAuthStateChanges } from '../services/auth'
 
 export default {
-    name: 'Navbar',
+    name: 'MovieCard',
+    props: ['movie'],
     data() {
         return {
-            user: {
-                id: null,
-                email: null,
-            },
+            user: { id: null, username: null },
+            liked: false,
+            likesCount: 0,
+            comments: [],
+            newComment: '',
         }
     },
     methods: {
-        handleLogout() {
-            logout()
-            this.$router.push('/login')
+        async fetchLikes() {
+            const { count, error } = await supabase
+                .from('likes')
+                .select('*', { count: 'exact', head: true })
+                .eq('movie_id', this.movie.id)
+
+            if (!error) this.likesCount = count || 0
+        },
+
+        async checkIfLiked() {
+            if (!this.user.id) return
+            const { data } = await supabase
+                .from('likes')
+                .select('*')
+                .eq('movie_id', this.movie.id)
+                .eq('user_id', this.user.id)
+                .maybeSingle()
+
+            this.liked = !!data
+        },
+
+        async toggleLike() {
+            if (!this.user.id) return alert('Iniciá sesión para dar like.')
+
+            if (this.liked) {
+                await supabase
+                    .from('likes')
+                    .delete()
+                    .eq('movie_id', this.movie.id)
+                    .eq('user_id', this.user.id)
+                this.likesCount--
+            } else {
+                await supabase.from('likes').insert({
+                    movie_id: this.movie.id,
+                    user_id: this.user.id,
+                })
+                this.likesCount++
+            }
+
+            this.liked = !this.liked
+        },
+
+        async fetchComments() {
+            const { data, error } = await supabase
+                .from('comments')
+                .select('*, user_profiles(username, avatar_url)')
+                .eq('movie_id', this.movie.id)
+                .order('created_at', { ascending: true })
+
+            if (!error) this.comments = data
+        },
+
+        async postComment() {
+            if (!this.newComment.trim()) return
+            if (!this.user.id) return alert('Iniciá sesión para comentar.')
+
+            const { error } = await supabase.from('comments').insert({
+                movie_id: this.movie.id,
+                user_id: this.user.id,
+                content: this.newComment.trim(),
+            })
+
+            if (!error) {
+                this.newComment = ''
+                await this.fetchComments()
+            }
         },
     },
-    mounted() {
-        subscribeToAuthStateChanges((newUserState) => (this.user = newUserState))
+    async mounted() {
+        subscribeToAuthStateChanges((newUser) => (this.user = newUser))
+        await this.fetchLikes()
+        await this.fetchComments()
+        await this.checkIfLiked()
     },
 }
 </script>
 
 <template>
-    <nav
-        class="flex justify-between items-center px-6 py-4 bg-[#121212] border-b border-gray-800 fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-opacity-95">
-        <!-- LOGO -->
-        <RouterLink to="/" class="text-[#EFB810] text-2xl font-bold tracking-wide hover:text-yellow-400 transition">
-            Underground Cinema
+    <article class="bg-[#1C1C1C] rounded-xl shadow-md border border-gray-700 overflow-hidden">
+        <!-- CABECERA -->
+        <div class="flex items-center gap-3 p-3 border-b border-gray-700">
+            <img :src="movie.user_profiles?.avatar_url || '/default-avatar.png'"
+                class="w-10 h-10 rounded-full object-cover border border-[#EFB810]" />
+            <div>
+                <p class="font-semibold text-[#EFB810]">
+                    {{ movie.user_profiles?.username || 'Anónimo' }}
+                </p>
+                <p class="text-xs text-gray-400">
+                    {{ new Date(movie.created_at).toLocaleDateString() }}
+                </p>
+            </div>
+        </div>
+
+        <!-- IMAGEN PRINCIPAL -->
+        <RouterLink :to="'/movies/' + movie.id">
+            <img :src="movie.poster" :alt="movie.titulo" class="w-full max-h-[600px] object-cover" />
         </RouterLink>
 
-        <!-- LINKS -->
-        <ul class="flex items-center gap-6 text-gray-300">
-            <li>
-                <RouterLink to="/"
-                    class="hover:text-[#EFB810] transition border-b-2 border-transparent hover:border-[#EFB810]"
-                    active-class="text-[#EFB810] border-b-2 border-[#EFB810]">
-                    Inicio
-                </RouterLink>
-            </li>
+        <!-- ACCIONES -->
+        <div class="flex items-center gap-6 px-4 py-3">
+            <button @click="toggleLike" class="focus:outline-none text-2xl">
+                <i :class="liked ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-300'"></i>
+            </button>
+            <span class="text-gray-400 text-sm">{{ likesCount }} me gusta</span>
+        </div>
 
-            <li>
-                <RouterLink to="/movies"
-                    class="hover:text-[#EFB810] transition border-b-2 border-transparent hover:border-[#EFB810]"
-                    active-class="text-[#EFB810] border-b-2 border-[#EFB810]">
-                    Películas
-                </RouterLink>
-            </li>
+        <!-- DESCRIPCIÓN -->
+        <div class="px-4 pb-2">
+            <p class="text-white text-sm leading-snug">
+                <span class="font-semibold text-[#EFB810] mr-2">{{
+                    movie.user_profiles?.username || 'Anónimo'
+                    }}</span>
+                {{ movie.description }}
+            </p>
+        </div>
 
-            <template v-if="user.id === null">
-                <li>
-                    <RouterLink to="/login"
-                        class="px-4 py-2 bg-[#EFB810] text-black font-semibold rounded hover:bg-yellow-400 transition">
-                        Ingresar
-                    </RouterLink>
-                </li>
+        <!-- COMENTARIOS -->
+        <div class="px-4 pb-3 text-sm">
+            <p v-if="!comments.length" class="text-gray-500 italic text-center border-t border-gray-700 pt-3">
+                Sé el primero en comentar 💬
+            </p>
 
-                <li>
-                    <RouterLink to="/register"
-                        class="px-4 py-2 bg-[#EFB810] text-black font-semibold rounded hover:bg-yellow-400 transition">
-                        Registrarse
-                    </RouterLink>
-                </li>
-            </template>
+            <div v-for="comment in comments" :key="comment.id" class="border-t border-gray-700 pt-2 mt-2 flex gap-2">
+                <img :src="comment.user_profiles?.avatar_url || '/default-avatar.png'"
+                    class="w-6 h-6 rounded-full border border-gray-700 object-cover" />
+                <p>
+                    <span class="font-semibold text-[#EFB810]">{{
+                        comment.user_profiles?.username
+                        }}</span>
+                    {{ comment.content }}
+                </p>
+            </div>
+        </div>
 
-            <template v-else>
-                <li>
-                    <RouterLink to="/chat"
-                        class="hover:text-[#EFB810] transition border-b-2 border-transparent hover:border-[#EFB810]"
-                        active-class="text-[#EFB810] border-b-2 border-[#EFB810]">
-                        Chat Global
-                    </RouterLink>
-                </li>
-
-                <li>
-                    <RouterLink to="/mi-perfil"
-                        class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 hover:border-[#EFB810] hover:text-[#EFB810] transition"
-                        active-class="border-[#EFB810] text-[#EFB810] bg-[#1c1c1c]">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
-                            <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4s-4 1.79-4 4 1.79 4 4 4z" />
-                            <path d="M12 14c-4.41 0-8 1.79-8 4v2h16v-2c0-2.21-3.59-4-8-4z" />
-                        </svg>
-                    </RouterLink>
-                </li>
-
-                <li>
-                    <form @submit.prevent="handleLogout">
-                        <button type="submit"
-                            class="px-4 py-2 border border-[#EFB810] rounded text-[#EFB810] font-semibold hover:bg-[#EFB810] hover:text-black transition">
-                            Cerrar sesión
-                        </button>
-                    </form>
-                </li>
-            </template>
-        </ul>
-    </nav>
+        <!-- FORMULARIO COMENTAR -->
+        <div class="border-t border-gray-700 p-3 flex items-center gap-2">
+            <input v-model="newComment" type="text" placeholder="Agregá un comentario..."
+                class="flex-1 bg-transparent border-none text-sm text-gray-300 focus:outline-none"
+                @keyup.enter="postComment" />
+            <button @click="postComment" class="text-[#EFB810] text-sm font-semibold hover:text-yellow-400">
+                Publicar
+            </button>
+        </div>
+    </article>
 </template>
+
+<style scoped>
+.fa-heart {
+    transition: transform 0.2s ease;
+}
+
+.fa-heart:hover {
+    transform: scale(1.2);
+}
+</style>
