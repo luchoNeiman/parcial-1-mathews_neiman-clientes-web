@@ -8,6 +8,8 @@ export default {
             user: {
                 id: null,
                 email: null,
+                username: null,
+                avatar_url: null,
             },
             mobileMenuOpen: false,
         };
@@ -90,9 +92,15 @@ export default {
                         </li>
                         <li>
                             <RouterLink to="/mi-perfil"
-                                class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 hover:border-[#EFB810] hover:text-[#EFB810] transition mx-auto md:mx-0"
+                                class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 hover:border-[#EFB810] hover:text-[#EFB810] transition mx-auto md:mx-0 overflow-hidden"
                                 active-class="border-[#EFB810] text-[#EFB810] bg-[#1c1c1c]">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
+                                <!-- Mostrar foto de perfil si existe -->
+                                <img v-if="user.avatar_url"
+                                    :src="user.avatar_url"
+                                    alt="Avatar"
+                                    class="w-full h-full object-cover rounded-full" />
+                                <!-- Mostrar ícono por defecto si no hay foto -->
+                                <svg v-else xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
                                     <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4s-4 1.79-4 4 1.79 4 4 4z" />
                                     <path d="M12 14c-4.41 0-8 1.79-8 4v2h16v-2c0-2.21-3.59-4-8-4z" />
                                 </svg>

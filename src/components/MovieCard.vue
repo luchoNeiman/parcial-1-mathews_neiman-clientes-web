@@ -96,7 +96,7 @@ export default {
     <article class="bg-[#1C1C1C] rounded-xl shadow-md border border-gray-700 overflow-hidden">
         <!-- CABECERA -->
         <div class="flex items-center gap-3 p-3 border-b border-gray-700">
-            <RouterLink :to="'/usuarios/' + movie.user_id" class="flex items-center gap-3 hover:opacity-80 transition">
+            <RouterLink :to="'/usuario/' + movie.user_id" class="flex items-center gap-3 hover:opacity-80 transition">
                 <img :src="movie.user_profiles?.avatar_url || '/default-avatar.png'"
                     class="w-10 h-10 rounded-full object-cover border border-[#EFB810]" />
                 <div>
@@ -126,7 +126,7 @@ export default {
         <!-- DESCRIPCIÓN -->
         <div class="px-4 pb-2">
             <p class="text-white text-sm leading-snug">
-                <RouterLink :to="'/usuarios/' + movie.user_id" class="font-semibold text-[#EFB810] mr-2 hover:text-yellow-400 transition">{{
+                <RouterLink :to="'/usuario/' + movie.user_id" class="font-semibold text-[#EFB810] mr-2 hover:text-yellow-400 transition">{{
                     movie.user_profiles?.username || 'Anónimo'
                     }}</RouterLink>
                 {{ movie.description }}
@@ -135,9 +135,12 @@ export default {
 
         <!-- COMENTARIOS -->
         <div class="px-4 pb-3 text-sm">
-            <p v-if="!comments.length" class="text-gray-500 italic text-center border-t border-gray-700 pt-3">
-                Sé el primero en comentar 💬
-            </p>
+            <div v-if="!comments.length" class="text-gray-500 italic text-center border-t border-gray-700 pt-3 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Sé el primero en comentar</span>
+            </div>
 
             <div v-for="comment in comments" :key="comment.id" class="border-t border-gray-700 pt-2 mt-2 flex gap-2">
                 <img :src="comment.user_profiles?.avatar_url || '/default-avatar.png'"

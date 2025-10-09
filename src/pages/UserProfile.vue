@@ -31,6 +31,31 @@ export default {
                 .eq('user_id', userId)
             if (error) console.error(error.message)
             this.movies = data || []
+
+            // Cargar likes y comentarios para cada película
+            if (this.movies.length > 0) {
+                await this.fetchMovieStats()
+            }
+        },
+
+        async fetchMovieStats() {
+            for (let movie of this.movies) {
+                // Obtener count de likes
+                const { count: likesCount } = await supabase
+                    .from('likes')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('movie_id', movie.id)
+
+                // Obtener count de comentarios
+                const { count: commentsCount } = await supabase
+                    .from('comments')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('movie_id', movie.id)
+
+                // Agregar las estadísticas al objeto de la película
+                movie.likesCount = likesCount || 0
+                movie.commentsCount = commentsCount || 0
+            }
         },
     },
 }
@@ -95,15 +120,24 @@ export default {
                     <div class="space-y-2">
                         <p class="text-sm font-medium">{{ user.username }}</p>
                         <p class="text-sm text-gray-300">{{ user.bio || 'Sin descripción...' }}</p>
-                        <p class="text-sm text-gray-400" v-if="user.location">
-                            📍 {{ user.location }}
-                        </p>
+                        <div class="flex items-center gap-1 text-sm text-gray-400" v-if="user.location">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>{{ user.location }}</span>
+                        </div>
                         <div class="flex flex-wrap gap-2 text-xs" v-if="user.favorite_genres || user.favorite_directors">
-                            <span v-if="user.favorite_genres" class="bg-gray-800 px-2 py-1 rounded">
-                                🎬 {{ user.favorite_genres }}
+                            <span v-if="user.favorite_genres" class="bg-gray-800 px-2 py-1 rounded flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ user.favorite_genres }}
                             </span>
-                            <span v-if="user.favorite_directors" class="bg-gray-800 px-2 py-1 rounded">
-                                🎥 {{ user.favorite_directors }}
+                            <span v-if="user.favorite_directors" class="bg-gray-800 px-2 py-1 rounded flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 6a2 2 0 012-2h6l2 2h6a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path>
+                                </svg>
+                                {{ user.favorite_directors }}
                             </span>
                         </div>
                     </div>
@@ -136,13 +170,13 @@ export default {
                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span>24</span>
+                                        <span>{{ movie.likesCount || 0 }}</span>
                                     </div>
                                     <div class="flex items-center gap-1">
                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
                                         </svg>
-                                        <span>8</span>
+                                        <span>{{ movie.commentsCount || 0 }}</span>
                                     </div>
                                 </div>
                             </div>

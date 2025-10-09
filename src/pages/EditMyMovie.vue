@@ -93,8 +93,8 @@ export default {
 
                 if (updateError) throw updateError
 
-                this.successMessage = 'Película actualizada con éxito 🎬'
-                setTimeout(() => this.$router.push('/mi-perfil'), 1500)
+                this.successMessage = 'Película actualizada con éxito'
+                setTimeout(() => this.$router.push(`/movies/${this.movie.id}`), 1500)
             } catch (err) {
                 console.error('[EditMyMovie.vue] Error al editar película:', err.message)
                 this.errorMessage = 'No se pudo actualizar la película. Verificá tus permisos.'
@@ -121,7 +121,7 @@ export default {
 
                 if (error) throw error
 
-                this.successMessage = 'Película eliminada correctamente 🗑️'
+                this.successMessage = 'Película eliminada correctamente'
                 this.showDeleteModal = false
                 setTimeout(() => this.$router.push('/mi-perfil'), 1500)
             } catch (err) {
@@ -150,7 +150,7 @@ export default {
 <template>
     <section class="pt-24 px-6 min-h-screen bg-[#121212] text-white flex flex-col items-center">
         <div class="bg-[#1C1C1C] border border-gray-700 rounded-xl shadow-xl p-8 w-full max-w-2xl flex flex-col gap-6">
-            <h1 class="text-3xl font-bold text-center text-[#EFB810]">✏️ Editar película</h1>
+            <h1 class="text-3xl font-bold text-center text-[#EFB810]">Editar película</h1>
 
             <div v-if="!movie && !errorMessage" class="text-center text-gray-400 py-6">
                 Cargando información...
@@ -196,7 +196,7 @@ export default {
 
                     <button type="button" @click="confirmDelete"
                         class="px-6 py-2 rounded bg-red-600 text-white font-semibold hover:bg-red-700 transition">
-                        🗑️ Eliminar
+                        Eliminar
                     </button>
                 </div>
             </form>
