@@ -1,18 +1,31 @@
 <script>
 import { supabase } from '../services/supabase.js'
 import { useRoute } from 'vue-router'
+import { subscribeToAuthStateChanges } from '../services/auth.js'
+import CommentForm from '../components/CommentForm.vue'
 import LikeButton from '../components/LikeButton.vue'
+
+let unsubscribeFromAuth = () => { }
 
 export default {
     name: 'MovieDetail',
     components: { LikeButton },
     data() {
-        return { movie: null }
+        return {
+            movie: null,
+            user: {
+                id: null,
+                email: null,
+                username: null,
+            },
+        }
     },
     async created() {
+        // 🟡 Obtener ID de la ruta
         const route = useRoute()
         const movieId = route.params.id
 
+        // 🟢 Cargar datos de la película
         const { data, error } = await supabase
             .from('movies')
             .select('*, user_profiles(username, avatar_url)')
@@ -21,6 +34,14 @@ export default {
 
         if (error) console.error('Error al cargar película:', error.message)
         this.movie = data
+
+        // 🔵 Escuchar cambios de sesión
+        unsubscribeFromAuth = subscribeToAuthStateChanges(
+            (newUserState) => (this.user = newUserState)
+        )
+    },
+    unmounted() {
+        unsubscribeFromAuth()
     },
 }
 </script>
@@ -96,7 +117,8 @@ export default {
 
                         <!-- Acciones fijas -->
                         <div class="p-4 border-t border-gray-800 bg-[#1C1C1C]">
-                            <LikeButton :movieId="movie.id" />
+                            <!-- Botones de interacción -->
+                <LikeButton :movieId="movie.id" />
 
                             <!-- Información adicional -->
                             <div class="mt-3 text-xs text-gray-500">
@@ -118,12 +140,21 @@ export default {
                         class="aspect-square bg-gray-800 rounded border border-gray-700 animate-pulse">
                     </div>
                 </div>
+
+                <!-- Mostrar solo si el usuario logueado es el dueño -->
+                <RouterLink v-if="user?.id && movie.user_id === user.id" :to="`/movies/editar/${movie.id}`"
+                    class="px-4 py-2 rounded bg-[#EFB810] text-black font-semibold hover:bg-yellow-400 transition mt-4 inline-block">
+                    ✏️ Editar publicación
+                </RouterLink>
             </div>
         </div>
 
         <!-- Loading state -->
         <div v-else class="flex justify-center items-center h-64">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#EFB810] border-t-transparent"></div>
+        </div>
+        <div v-else class="text-center py-10 text-gray-500">
+            Cargando datos de la película...
         </div>
     </section>
 </template>

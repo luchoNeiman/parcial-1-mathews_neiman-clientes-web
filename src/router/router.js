@@ -11,8 +11,7 @@ import UserProfile from "../pages/UserProfile.vue";
 import Movies from "../pages/Movies.vue";
 import MovieDetail from "../pages/MovieDetail.vue";
 import CreateMoviePost from "../pages/CreateMoviePost.vue";
-// import NotFound from "../pages/NotFound.vue";
-
+import EditMyMovie from "../pages/EditMyMovie.vue";
 
 const routes = [
     { path: '/',                        name: 'Home',                       component: Home },    
@@ -25,6 +24,7 @@ const routes = [
     { path: '/movies',                  name: 'Movies',                     component: Movies, },
     { path: '/movies/:id',              name: 'MovieDetail',                component: MovieDetail, },
     { path: '/movies/crear',            name: 'CreateMoviePost',            component: CreateMoviePost,       meta: { requiresAuth: true, }, },
+    { path: '/movies/editar/:id',       name: 'EditMyMovie',                component: EditMyMovie,           meta: { requiresAuth: true, }, },
 ];
 
 
