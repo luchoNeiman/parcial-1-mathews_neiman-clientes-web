@@ -204,8 +204,6 @@ export default {
                             </div>
                         </div>
 
-
-                        <!-- Acciones más compactas -->
                         <div class="p-4 xl:p-5 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
                             <LikeButton :movieId="movie.id" />
 
@@ -214,7 +212,6 @@ export default {
                             </div>
                         </div>
 
-                        <!-- Comentarios optimizados para pantallas grandes -->
                         <div class="border-t border-gray-800 bg-[#1C1C1C] flex-1 flex flex-col comments-container">
                             <div class="p-4 xl:p-5 border-b border-gray-800 flex-shrink-0">
                                 <h3 class="text-sm font-semibold text-gray-300">Comentarios</h3>
@@ -262,7 +259,6 @@ export default {
                             </div>
                         </div>
 
-                        <!-- Formulario de comentario más compacto -->
                         <div class="p-4 xl:p-5 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
                             <div class="flex gap-3 items-start">
                                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0 mt-0.5">
@@ -354,7 +350,6 @@ export default {
     max-height: calc(100vh - 600px);
 }
 
-/* Imagen con fondo difuminado para todas las pantallas */
 .image-container {
     position: relative;
     overflow: hidden;

@@ -73,7 +73,7 @@ export default {
 
 <template>
     <div class="min-h-screen bg-[#121212] text-white">
-        <!-- Hero Section con Video (mantener arriba como querías) -->
+        <!-- Section con Video -->
         <section class="relative h-[500px] md:h-[600px] flex items-center justify-center text-center overflow-hidden">
             <!-- VIDEO DE FONDO -->
             <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover brightness-[0.4]">
@@ -98,7 +98,6 @@ export default {
             </div>
         </section>
 
-        <!-- Layout estilo Instagram -->
         <div class="max-w-7xl mx-auto px-4 py-8">
             <div class="flex flex-col lg:flex-row gap-8">
 
@@ -177,7 +176,7 @@ export default {
                     </div>
                 </div>
 
-                <!-- SIDEBAR DERECHO - SUGERENCIAS -->
+                <!-- SIDEBAR DERECHO -->
                 <div class="lg:w-1/3">
                     <div class="sticky top-24 space-y-6">
 
@@ -229,7 +228,7 @@ export default {
                             </div>
                         </div>
 
-                        <!-- Call to action para usuarios no logueados -->
+                        <!--para usuarios no logueados -->
                         <div v-if="!user.id" class="bg-[#1C1C1C] border border-gray-800 rounded-lg p-6 text-center">
                             <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
                                 <div class="w-full h-full rounded-full bg-[#121212] flex items-center justify-center">

@@ -199,7 +199,7 @@ export default {
             </form>
         </div>
 
-        <!-- 🟥 Modal de confirmación -->
+        <!-- Modal de confirmación -->
         <div v-if="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div class="bg-[#1C1C1C] border border-gray-700 rounded-xl p-6 w-80 text-center shadow-2xl">
                 <h2 class="text-xl font-semibold text-[#EFB810] mb-4">¿Eliminar esta película?</h2>
