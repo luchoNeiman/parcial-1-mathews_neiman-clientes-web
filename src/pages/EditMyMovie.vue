@@ -35,7 +35,6 @@ export default {
 
             if (error) {
                 this.errorMessage = 'Error al cargar la película.'
-                console.error(error)
                 return
             }
 
@@ -96,7 +95,6 @@ export default {
                 this.successMessage = 'Película actualizada con éxito'
                 setTimeout(() => this.$router.push(`/movies/${this.movie.id}`), 1500)
             } catch (err) {
-                console.error('[EditMyMovie.vue] Error al editar película:', err.message)
                 this.errorMessage = 'No se pudo actualizar la película. Verificá tus permisos.'
             } finally {
                 this.loading = false
@@ -125,7 +123,6 @@ export default {
                 this.showDeleteModal = false
                 setTimeout(() => this.$router.push('/mi-perfil'), 1500)
             } catch (err) {
-                console.error('[EditMyMovie.vue] Error al eliminar película:', err.message)
                 this.errorMessage = 'No se pudo eliminar la película. Verificá tus permisos.'
             } finally {
                 this.loading = false

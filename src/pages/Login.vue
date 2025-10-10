@@ -22,7 +22,6 @@ export default {
                 await login(this.user.email, this.user.password)
                 this.$router.push('/mi-perfil')
             } catch (error) {
-                console.error('[Login.vue] Error al iniciar sesión:', error)
                 this.errorMessage = 'Credenciales incorrectas o error al iniciar sesión.'
             } finally {
                 this.loading = false

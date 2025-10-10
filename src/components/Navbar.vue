@@ -32,7 +32,6 @@ export default {
 <template>
     <nav class="bg-[#121212] border-b border-gray-800 fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-opacity-95">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-4">
-            <!-- LOGO -->
             <RouterLink to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <img src="/favicon.png" class="h-8" alt="Logo" />
                 <span class="self-center text-xl font-semibold whitespace-nowrap text-[#EFB810] hover:text-yellow-400 transition hidden sm:block">
@@ -40,16 +39,13 @@ export default {
                 </span>
             </RouterLink>
 
-            <!-- MOBILE MENU BUTTON -->
             <button @click="toggleMobileMenu" type="button"
                 class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-400 rounded-lg md:hidden hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600">
-                <span class="sr-only">Open main menu</span>
                 <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
                 </svg>
             </button>
 
-            <!-- DESKTOP MENU -->
             <div class="hidden w-full md:block md:w-auto">
                 <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-700 rounded-lg bg-gray-800 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent">
                     <li>
@@ -94,12 +90,10 @@ export default {
                             <RouterLink to="/mi-perfil"
                                 class="flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 hover:border-[#EFB810] hover:text-[#EFB810] transition mx-auto md:mx-0 overflow-hidden"
                                 active-class="border-[#EFB810] text-[#EFB810] bg-[#1c1c1c]">
-                                <!-- Mostrar foto de perfil si existe -->
                                 <img v-if="user.avatar_url"
                                     :src="user.avatar_url"
                                     alt="Avatar"
                                     class="w-full h-full object-cover rounded-full" />
-                                <!-- Mostrar ícono por defecto si no hay foto -->
                                 <svg v-else xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
                                     <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4s-4 1.79-4 4 1.79 4 4 4z" />
                                     <path d="M12 14c-4.41 0-8 1.79-8 4v2h16v-2c0-2.21-3.59-4-8-4z" />
@@ -116,7 +110,6 @@ export default {
                 </ul>
             </div>
 
-            <!-- MOBILE MENU -->
             <div :class="{'hidden': !mobileMenuOpen}" class="w-full md:hidden">
                 <ul class="font-medium flex flex-col p-4 mt-4 border border-gray-700 rounded-lg bg-gray-800 space-y-2">
                     <li>

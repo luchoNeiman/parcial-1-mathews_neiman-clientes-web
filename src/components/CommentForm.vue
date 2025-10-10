@@ -29,7 +29,8 @@ export default {
                 .eq('movie_id', this.movieId)
                 .order('created_at', { ascending: true })
 
-            if (error) console.error(error.message)
+            if (error) {
+            }
             this.comments = data || []
         },
 
@@ -44,7 +45,8 @@ export default {
                     content: this.comment.trim(),
                 })
 
-            if (error) console.error(error.message)
+            if (error) {
+            }
             this.comment = ''
         },
 
@@ -83,7 +85,6 @@ export default {
     <div class="w-full mt-6 text-white">
         <h3 class="font-semibold mb-2 text-[#EFB810]">Dejá tu comentario:</h3>
 
-        <!-- Formulario -->
         <textarea v-model="comment" class="w-full border border-gray-700 p-2 rounded bg-transparent text-white"
             placeholder="Escribí algo..."></textarea>
 
@@ -92,7 +93,6 @@ export default {
             Enviar
         </button>
 
-        <!-- Comentarios -->
         <div v-if="comments.length" class="mt-6">
             <h4 class="font-semibold mb-2 text-[#EFB810]">Comentarios:</h4>
             <ul>

@@ -1,6 +1,8 @@
 <script>
 import { getUserProfileById } from '../services/user-profiles'
 import { supabase } from '../services/supabase'
+import { subscribeToAuthStateChanges } from '../services/auth'
+import { followUser, unfollowUser, isFollowing, getFollowStats } from '../services/follows'
 
 export default {
     name: 'UserProfile',
@@ -9,19 +11,34 @@ export default {
             user: {},
             movies: [],
             loading: false,
+            currentUser: { id: null },
+            isFollowingUser: false,
+            followersCount: 0,
+            followingCount: 0,
+            followLoading: false,
         }
     },
     async mounted() {
         try {
             this.loading = true
             const userId = this.$route.params.id
+
             this.user = await getUserProfileById(userId)
             await this.fetchMovies(userId)
+            await this.fetchFollowStats(userId)
+
         } catch (error) {
-            console.error('Error al cargar el perfil del usuario:', error)
         } finally {
             this.loading = false
         }
+
+        // Suscribirse a cambios de autenticación DESPUÉS de cargar el usuario
+        subscribeToAuthStateChanges(async (newUserState) => {
+            this.currentUser = newUserState
+            if (newUserState.id && this.user.id) {
+                await this.checkFollowStatus()
+            }
+        })
     },
     methods: {
         async fetchMovies(userId) {
@@ -29,7 +46,8 @@ export default {
                 .from('movies')
                 .select('*')
                 .eq('user_id', userId)
-            if (error) console.error(error.message)
+            if (error) {
+            }
             this.movies = data || []
 
             // Cargar likes y comentarios para cada película
@@ -39,22 +57,71 @@ export default {
         },
 
         async fetchMovieStats() {
-            for (let movie of this.movies) {
-                // Obtener count de likes
-                const { count: likesCount } = await supabase
-                    .from('likes')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('movie_id', movie.id)
-
-                // Obtener count de comentarios
-                const { count: commentsCount } = await supabase
-                    .from('comments')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('movie_id', movie.id)
+            // Crear todas las promesas para likes y comentarios en paralelo
+            const statsPromises = this.movies.map(async (movie) => {
+                const [likesResult, commentsResult] = await Promise.all([
+                    supabase
+                        .from('likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('movie_id', movie.id),
+                    supabase
+                        .from('comments')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('movie_id', movie.id)
+                ])
 
                 // Agregar las estadísticas al objeto de la película
-                movie.likesCount = likesCount || 0
-                movie.commentsCount = commentsCount || 0
+                movie.likesCount = likesResult.count || 0
+                movie.commentsCount = commentsResult.count || 0
+            })
+
+            // Ejecutar todas las promesas en paralelo
+            await Promise.all(statsPromises)
+        },
+
+        async fetchFollowStats(userId) {
+            try {
+                const stats = await getFollowStats(userId)
+                this.followersCount = stats.followersCount
+                this.followingCount = stats.followingCount
+            } catch (error) {
+            }
+        },
+
+        async checkFollowStatus() {
+            if (!this.currentUser.id || !this.user.id) return
+            try {
+                this.isFollowingUser = await isFollowing(this.user.id)
+            } catch (error) {
+            }
+        },
+
+        async toggleFollow() {
+            if (!this.currentUser.id) {
+                alert('Tenés que iniciar sesión para seguir usuarios')
+                return
+            }
+
+            if (this.currentUser.id === this.user.id) {
+                alert('No podés seguirte a vos mismo')
+                return
+            }
+
+            this.followLoading = true
+            try {
+                if (this.isFollowingUser) {
+                    await unfollowUser(this.user.id)
+                    this.isFollowingUser = false
+                    this.followersCount--
+                } else {
+                    await followUser(this.user.id)
+                    this.isFollowingUser = true
+                    this.followersCount++
+                }
+            } catch (error) {
+                alert('Error al actualizar el seguimiento')
+            } finally {
+                this.followLoading = false
             }
         },
     },
@@ -70,7 +137,6 @@ export default {
         <div v-else class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- CABECERA PERFIL -->
             <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 py-8 border-b border-gray-800">
-                <!-- Avatar -->
                 <div class="relative">
                     <div class="w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
                         <img :src="user.avatar_url || '/default-avatar.png'" alt="Avatar"
@@ -78,17 +144,16 @@ export default {
                     </div>
                 </div>
 
-                <!-- Info -->
                 <div class="flex-1 text-center sm:text-left space-y-4">
                     <!-- Username y acciones -->
                     <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                         <h1 class="text-xl sm:text-2xl font-light">{{ user.username }}</h1>
-                        <div v-if="!user.userId" class="flex gap-2">
-                            <button class="px-4 py-1.5 bg-[#EFB810] text-black text-sm font-medium rounded hover:bg-yellow-400 transition">
-                                Seguir
-                            </button>
-                            <button class="px-4 py-1.5 bg-gray-700 text-white text-sm font-medium rounded hover:bg-gray-600 transition">
-                                Mensaje
+                        <div v-if="currentUser.id && currentUser.id !== user.id" class="flex gap-2">
+                            <button @click="toggleFollow"
+                                :disabled="followLoading"
+                                :class="isFollowingUser ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-[#EFB810] text-black hover:bg-yellow-400'"
+                                class="px-4 py-1.5 text-sm font-medium rounded transition disabled:opacity-50">
+                                {{ followLoading ? 'Cargando...' : (isFollowingUser ? 'Siguiendo' : 'Seguir') }}
                             </button>
                             <span v-if="user.verified"
                                 class="inline-flex items-center px-2 py-1 bg-blue-600 text-xs font-medium rounded-full text-white">
@@ -107,11 +172,11 @@ export default {
                             <span class="text-gray-400 ml-1">publicaciones</span>
                         </div>
                         <div class="text-center sm:text-left cursor-pointer hover:text-gray-300 transition">
-                            <span class="font-semibold">75</span>
+                            <span class="font-semibold">{{ followersCount }}</span>
                             <span class="text-gray-400 ml-1">seguidores</span>
                         </div>
                         <div class="text-center sm:text-left cursor-pointer hover:text-gray-300 transition">
-                            <span class="font-semibold">60</span>
+                            <span class="font-semibold">{{ followingCount }}</span>
                             <span class="text-gray-400 ml-1">seguidos</span>
                         </div>
                     </div>
@@ -163,7 +228,6 @@ export default {
                         class="aspect-square bg-[#1C1C1C] border border-gray-800 overflow-hidden hover:opacity-75 transition-opacity group relative">
                         <RouterLink :to="'/movies/' + movie.id" class="block w-full h-full">
                             <img :src="movie.poster" :alt="movie.titulo" class="w-full h-full object-cover" />
-                            <!-- Overlay en hover para mostrar stats -->
                             <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <div class="flex items-center gap-4 text-white text-sm font-semibold">
                                     <div class="flex items-center gap-1">
@@ -184,7 +248,6 @@ export default {
                     </div>
                 </div>
 
-                <!-- Estado vacío -->
                 <div v-else class="text-center py-16 space-y-4">
                     <div class="w-16 h-16 mx-auto border-2 border-gray-600 rounded-full flex items-center justify-center">
                         <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -29,7 +29,6 @@ const routes = [
 
 
 const router = createRouter({
-    // routes: routes,
     history: createWebHistory(),
     routes,
 });

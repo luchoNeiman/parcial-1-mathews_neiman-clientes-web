@@ -94,7 +94,6 @@ export default {
 
 <template>
     <article class="bg-[#1C1C1C] rounded-xl shadow-md border border-gray-700 overflow-hidden">
-        <!-- CABECERA -->
         <div class="flex items-center gap-3 p-3 border-b border-gray-700">
             <RouterLink :to="'/usuario/' + movie.user_id" class="flex items-center gap-3 hover:opacity-80 transition">
                 <img :src="movie.user_profiles?.avatar_url || '/default-avatar.png'"
@@ -110,12 +109,10 @@ export default {
             </RouterLink>
         </div>
 
-        <!-- IMAGEN PRINCIPAL -->
         <RouterLink :to="'/movies/' + movie.id">
             <img :src="movie.poster" :alt="movie.titulo" class="w-full max-h-[600px] object-cover" />
         </RouterLink>
 
-        <!-- ACCIONES -->
         <div class="flex items-center gap-6 px-4 py-3">
             <button @click="toggleLike" class="focus:outline-none text-2xl">
                 <i :class="liked ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-300'"></i>
@@ -123,7 +120,6 @@ export default {
             <span class="text-gray-400 text-sm">{{ likesCount }} me gusta</span>
         </div>
 
-        <!-- DESCRIPCIÓN -->
         <div class="px-4 pb-2">
             <p class="text-white text-sm leading-snug">
                 <RouterLink :to="'/usuario/' + movie.user_id" class="font-semibold text-[#EFB810] mr-2 hover:text-yellow-400 transition">{{
@@ -133,7 +129,6 @@ export default {
             </p>
         </div>
 
-        <!-- COMENTARIOS -->
         <div class="px-4 pb-3 text-sm">
             <div v-if="!comments.length" class="text-gray-500 italic text-center border-t border-gray-700 pt-3 flex items-center justify-center gap-2">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -154,7 +149,6 @@ export default {
             </div>
         </div>
 
-        <!-- FORMULARIO COMENTAR -->
         <div class="border-t border-gray-700 p-3 flex items-center gap-2">
             <input v-model="newComment" type="text" placeholder="Agregá un comentario..."
                 class="flex-1 bg-transparent border-none text-sm text-gray-300 focus:outline-none"

@@ -22,7 +22,6 @@ export default {
                 await register(this.user.email, this.user.password)
                 this.$router.push('/mi-perfil')
             } catch (error) {
-                console.error('[Register.vue] Error al registrarse:', error)
                 this.errorMessage = 'No se pudo crear la cuenta. Revisá los datos ingresados.'
             } finally {
                 this.loading = false

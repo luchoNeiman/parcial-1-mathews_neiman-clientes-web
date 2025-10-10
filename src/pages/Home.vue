@@ -35,7 +35,7 @@ export default {
                     this.recentMovies = data || []
                 }
             } catch (error) {
-                console.error('Error al cargar películas recientes:', error)
+                // Error handling for loading recent movies
             } finally {
                 this.loading = false
             }
@@ -53,7 +53,7 @@ export default {
                     this.suggestedUsers = data || []
                 }
             } catch (error) {
-                console.error('Error al cargar usuarios sugeridos:', error)
+                // Error handling for loading suggested users
             }
         }
     },
