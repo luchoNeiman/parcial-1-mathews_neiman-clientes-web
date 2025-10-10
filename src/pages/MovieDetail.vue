@@ -58,7 +58,6 @@ export default {
                     .single()
 
                 if (error) {
-                    console.error('Error al cargar película:', error.message)
                     return
                 }
 
@@ -72,7 +71,6 @@ export default {
                 // Cargar comentarios de la película
                 await this.fetchComments(movieId)
             } catch (error) {
-                console.error('Error:', error.message)
             }
         },
         async fetchRelatedMovies(userId, currentMovieId) {
@@ -87,12 +85,10 @@ export default {
                     .order('created_at', { ascending: false })
 
                 if (error) {
-                    console.error('Error al cargar películas relacionadas:', error.message)
                 } else {
                     this.relatedMovies = data || []
                 }
             } catch (error) {
-                console.error('Error:', error.message)
             } finally {
                 this.loadingRelated = false
             }
@@ -108,12 +104,10 @@ export default {
                     .order('created_at', { ascending: false })
 
                 if (error) {
-                    console.error('Error al cargar comentarios:', error.message)
                 } else {
                     this.comments = data || []
                 }
             } catch (error) {
-                console.error('Error:', error.message)
             } finally {
                 this.loadingComments = false
             }
@@ -138,7 +132,6 @@ export default {
                     await this.fetchComments(this.movie.id)
                 }
             } catch (error) {
-                console.error('Error al publicar comentario:', error.message)
             }
         }
     }
@@ -148,7 +141,6 @@ export default {
 <template>
     <section class="pt-20 bg-[#121212] text-white min-h-screen">
         <div v-if="movie" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <!-- Botón volver -->
             <div class="mb-6">
                 <button @click="$router.go(-1)"
                     class="flex items-center gap-2 text-gray-400 hover:text-white transition">
@@ -159,17 +151,13 @@ export default {
                 </button>
             </div>
 
-            <!-- Layout tipo Instagram para pantallas grandes, stack para móviles -->
-            <div class="flex flex-col xl:flex-row gap-8 bg-[#1C1C1C] border border-gray-800 rounded-lg overflow-hidden">
-                <!-- Imagen principal -->
-                <div class="xl:w-3/5">
+            <div class="flex flex-col lg:flex-row gap-0 lg:gap-8 bg-[#1C1C1C] border border-gray-800 rounded-lg overflow-hidden">
+                <div class="lg:w-3/5">
                     <img :src="movie.poster" :alt="movie.titulo"
-                        class="w-full h-64 sm:h-96 xl:h-full object-cover" />
+                        class="w-full h-64 sm:h-80 md:h-96 lg:h-[600px] xl:h-[700px] object-cover" />
                 </div>
 
-                <!-- Panel lateral con info -->
-                <div class="xl:w-2/5 flex flex-col min-w-0">
-                    <!-- Header con usuario -->
+                <div class="lg:w-2/5 flex flex-col min-w-0">
                     <div class="flex items-center gap-3 p-4 border-b border-gray-800">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
                             <img :src="movie.user_profiles?.avatar_url || '/default-avatar.png'"
@@ -190,98 +178,95 @@ export default {
                         </div>
                     </div>
 
-                    <!-- Contenido scrolleable -->
-                    <div class="flex-1 flex flex-col max-h-96 xl:max-h-full">
-                        <!-- Título y descripción -->
-                        <div class="p-4 space-y-3">
-                            <h1 class="text-xl font-bold text-[#EFB810]">{{ movie.titulo }}</h1>
-                            <p class="text-sm text-gray-300 leading-relaxed">
+                    <div class="flex-1 flex flex-col content-container">
+                        <div class="p-4 lg:p-6 space-y-3 lg:space-y-4 flex-shrink-0">
+                            <h1 class="text-xl lg:text-2xl font-bold text-[#EFB810]">{{ movie.titulo }}</h1>
+                            <p class="text-sm lg:text-base text-gray-300 leading-relaxed">
                                 <span class="font-semibold text-white mr-2">{{ movie.user_profiles?.username || 'Anónimo' }}</span>
                                 {{ movie.description }}
                             </p>
 
-                            <!-- Tags de género si están disponibles -->
                             <div class="flex flex-wrap gap-2" v-if="movie.genre">
-                                <span class="px-2 py-1 bg-gray-800 text-xs rounded-full text-gray-300">
+                                <span class="px-3 py-1 bg-gray-800 text-xs lg:text-sm rounded-full text-gray-300">
                                     {{ movie.genre }}
                                 </span>
                             </div>
                         </div>
 
 
-                        <!-- Acciones fijas -->
-                        <div class="p-4 border-t border-gray-800 bg-[#1C1C1C]">
-                            <!-- Botones de interacción -->
-                <LikeButton :movieId="movie.id" />
+                        <div class="p-4 lg:p-6 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
+                            <LikeButton :movieId="movie.id" />
 
-                            <!-- Información adicional -->
-                            <div class="mt-3 text-xs text-gray-500">
+                            <div class="mt-3 text-xs lg:text-sm text-gray-500">
                                 <p>Publicado el {{ new Date(movie.created_at).toLocaleDateString('es-ES') }}</p>
                             </div>
                         </div>
 
-                        <!-- Sección de comentarios -->
-                        <div class="border-t border-gray-800 bg-[#1C1C1C] flex-1 max-h-60 xl:max-h-80 overflow-y-auto">
-                            <!-- Loading state -->
-                            <div v-if="loadingComments" class="p-4 text-center">
-                                <div class="animate-spin rounded-full h-6 w-6 border-2 border-[#EFB810] border-t-transparent mx-auto"></div>
+                        <div class="border-t border-gray-800 bg-[#1C1C1C] flex-1 flex flex-col comments-container">
+                            <div class="p-4 lg:p-6 border-b border-gray-800 flex-shrink-0">
+                                <h3 class="text-sm lg:text-base font-semibold text-gray-300">Comentarios</h3>
                             </div>
 
-                            <!-- Comentarios existentes -->
-                            <div v-else-if="comments.length" class="p-4 space-y-3">
-                                <div v-for="comment in comments" :key="comment.id" class="flex gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0">
-                                        <img :src="comment.user_profiles?.avatar_url || '/default-avatar.png'"
-                                            class="w-full h-full rounded-full object-cover bg-[#121212]" />
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm">
-                                            <RouterLink :to="'/usuario/' + comment.user_id"
-                                                class="font-semibold text-[#EFB810] hover:text-yellow-400 transition mr-2">
-                                                {{ comment.user_profiles?.username || 'Anónimo' }}
-                                            </RouterLink>
-                                            <span class="text-gray-300">{{ comment.content }}</span>
-                                        </p>
-                                        <p class="text-xs text-gray-500 mt-1">
-                                            {{ new Date(comment.created_at).toLocaleDateString('es-ES', {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric'
-                                            }) }}
-                                        </p>
-                                    </div>
+                            <div class="flex-1 overflow-y-auto custom-scrollbar comments-scroll">
+                                <div v-if="loadingComments" class="p-4 lg:p-6 text-center">
+                                    <div class="animate-spin rounded-full h-6 w-6 border-2 border-[#EFB810] border-t-transparent mx-auto"></div>
                                 </div>
-                            </div>
 
-                            <!-- Estado vacío -->
-                            <div v-else class="p-8 text-center">
-                                <div class="w-12 h-12 mx-auto mb-3 text-gray-600">
-                                    <svg class="w-full h-full" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <div v-else-if="comments.length" class="p-4 lg:p-6 space-y-4">
+                                    <div v-for="comment in comments" :key="comment.id" class="flex gap-3">
+                                        <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0">
+                                            <img :src="comment.user_profiles?.avatar_url || '/default-avatar.png'"
+                                                class="w-full h-full rounded-full object-cover bg-[#121212]" />
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm lg:text-base leading-relaxed">
+                                                <RouterLink :to="'/usuario/' + comment.user_id"
+                                                    class="font-semibold text-[#EFB810] hover:text-yellow-400 transition mr-2">
+                                                    {{ comment.user_profiles?.username || 'Anónimo' }}
+                                                </RouterLink>
+                                                <span class="text-gray-300">{{ comment.content }}</span>
+                                            </p>
+                                            <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                                                {{ new Date(comment.created_at).toLocaleDateString('es-ES', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric'
+                                                }) }}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="text-gray-400 text-sm font-medium">Sin comentarios aún</p>
-                                <p class="text-gray-500 text-xs mt-1">Sé el primero en comentar esta película</p>
+
+                                <div v-else class="p-8 lg:p-12 text-center">
+                                    <div class="w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-3 text-gray-600">
+                                        <svg class="w-full h-full" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </div>
+                                    <p class="text-gray-400 text-sm lg:text-base font-medium">Sin comentarios aún</p>
+                                    <p class="text-gray-500 text-xs lg:text-sm mt-1">Sé el primero en comentar esta película</p>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Formulario para agregar comentario -->
-                        <div class="p-3 xl:p-4 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
-                            <div class="flex gap-2 xl:gap-3 items-start">
-                                <div class="w-7 h-7 xl:w-8 xl:h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0 mt-0.5">
+                        <div class="p-4 lg:p-6 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
+                            <div class="flex gap-3 lg:gap-4 items-start">
+                                <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0 mt-0.5">
                                     <img :src="user.avatar_url || '/default-avatar.png'"
                                         class="w-full h-full rounded-full object-cover bg-[#121212]" />
                                 </div>
-                                <div class="flex-1 min-w-0 flex flex-col sm:flex-row gap-2">
-                                    <input v-model="newComment" type="text" placeholder="Agregá un comentario..."
-                                        class="flex-1 bg-transparent border-none text-sm text-gray-300 focus:outline-none placeholder-gray-500 min-w-0"
-                                        @keyup.enter="postComment" />
-                                    <button @click="postComment"
-                                        :disabled="!newComment.trim()"
-                                        :class="newComment.trim() ? 'text-[#EFB810] hover:text-yellow-400' : 'text-gray-600 cursor-not-allowed'"
-                                        class="text-sm font-semibold transition flex-shrink-0 py-1 px-2 xl:px-0">
-                                        Publicar
-                                    </button>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex flex-col sm:flex-row gap-2 lg:gap-3">
+                                        <input v-model="newComment" type="text" placeholder="Agregá un comentario..."
+                                            class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm lg:text-base text-gray-300 focus:outline-none focus:border-[#EFB810] placeholder-gray-500 min-w-0 transition"
+                                            @keyup.enter="postComment" />
+                                        <button @click="postComment"
+                                            :disabled="!newComment.trim()"
+                                            :class="newComment.trim() ? 'bg-[#EFB810] hover:bg-yellow-400 text-black' : 'bg-gray-700 text-gray-500 cursor-not-allowed'"
+                                            class="px-4 py-2 text-sm lg:text-base font-semibold rounded-lg transition flex-shrink-0">
+                                            Publicar
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -289,27 +274,23 @@ export default {
                 </div>
             </div>
 
-            <!-- Películas relacionadas o del mismo usuario -->
             <div class="mt-12">
                 <h3 class="text-lg font-semibold mb-4 text-gray-300">
                     Más de {{ movie.user_profiles?.username || 'este usuario' }}
                 </h3>
 
-                <!-- Loading state -->
                 <div v-if="loadingRelated" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     <div v-for="i in 6" :key="i"
                         class="aspect-square bg-gray-800 rounded border border-gray-700 animate-pulse">
                     </div>
                 </div>
 
-                <!-- Películas reales -->
                 <div v-else-if="relatedMovies.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                     <div v-for="relatedMovie in relatedMovies" :key="relatedMovie.id"
                         class="aspect-square bg-gray-800 rounded border border-gray-700 overflow-hidden hover:opacity-75 transition-opacity group relative">
                         <RouterLink :to="'/movies/' + relatedMovie.id" class="block w-full h-full">
                             <img :src="relatedMovie.poster" :alt="relatedMovie.titulo"
                                 class="w-full h-full object-cover" />
-                            <!-- Overlay con título -->
                             <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <p class="text-white text-sm font-medium text-center px-2">{{ relatedMovie.titulo }}</p>
                             </div>
@@ -317,7 +298,6 @@ export default {
                     </div>
                 </div>
 
-                <!-- Estado vacío -->
                 <div v-else class="text-center py-8">
                     <div class="w-16 h-16 mx-auto mb-4 text-gray-600">
                         <svg class="w-full h-full" fill="currentColor" viewBox="0 0 20 20">
@@ -328,7 +308,6 @@ export default {
                     <p class="text-gray-500 text-xs mt-1">{{ movie.user_profiles?.username || 'Este usuario' }} no tiene más películas</p>
                 </div>
 
-                <!-- Mostrar solo si el usuario logueado es el dueño -->
                 <RouterLink v-if="user?.id && movie.user_id === user.id" :to="`/movies/editar/${movie.id}`"
                     class="px-4 py-2 rounded bg-[#EFB810] text-black font-semibold hover:bg-yellow-400 transition mt-6 inline-flex items-center gap-2">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -339,9 +318,47 @@ export default {
             </div>
         </div>
 
-        <!-- Loading state -->
         <div v-else class="flex justify-center items-center h-64">
             <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#EFB810] border-t-transparent"></div>
         </div>
     </section>
 </template>
+
+<style scoped>
+.content-container {
+    min-height: 0;
+}
+
+.comments-container {
+    min-height: 0;
+}
+
+.comments-scroll {
+    min-height: 200px;
+    max-height: calc(100vh - 600px);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #0A0A0A;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #EFB810;
+    border-radius: 4px;
+    border: 2px solid #1C1C1C;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #f1c40f;
+}
+
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #EFB810 #0A0A0A;
+}
+</style>

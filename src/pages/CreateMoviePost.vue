@@ -98,7 +98,6 @@ export default {
                     this.$router.push('/movies')
                 }, 2000)
             } catch (error) {
-                console.error('[CreateMoviePost.vue] Error:', error.message)
                 this.showNotification('error', 'Error al publicar', 'No se pudo subir la película. Revisá tu conexión e intentá de nuevo.')
             } finally {
                 this.loading = false
@@ -116,7 +115,6 @@ export default {
 
 <template>
     <section class="pt-24 px-6 min-h-screen bg-[#121212] text-white flex flex-col items-center relative">
-        <!-- NOTIFICACIÓN TOAST -->
         <div v-if="notification.show"
             :class="[
                 'fixed top-24 right-4 z-50 max-w-sm w-full transform transition-all duration-300 ease-in-out',
@@ -129,13 +127,10 @@ export default {
                     : 'bg-red-900 border-red-500 text-red-100'
             ]">
                 <div class="flex items-start">
-                    <!-- Ícono -->
                     <div class="flex-shrink-0 mr-3">
-                        <!-- Ícono de éxito -->
                         <svg v-if="notification.type === 'success'" class="w-6 h-6 text-green-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                         </svg>
-                        <!-- Ícono de error -->
                         <svg v-else class="w-6 h-6 text-red-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
                         </svg>
@@ -171,7 +166,6 @@ export default {
                 <textarea v-model="form.description" rows="4" placeholder="Descripción o reseña"
                     class="p-3 rounded-lg bg-[#2A2A2A] border border-gray-600 text-white focus:border-[#EFB810] focus:outline-none transition resize-none" required></textarea>
 
-                <!-- File upload -->
                 <label
                     class="flex flex-col items-center justify-center p-6 border-2 border-dashed border-[#EFB810]/60 rounded-xl cursor-pointer hover:bg-[#2A2A2A] hover:border-[#EFB810] transition group">
                     <div class="flex flex-col items-center text-center">

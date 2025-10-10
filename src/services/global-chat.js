@@ -1,7 +1,7 @@
 import { supabase } from './supabase.js'
 
 /**
- * 📥 Obtener todos los mensajes del chat global.
+ * Obtener todos los mensajes del chat global.
  * Retorna los mensajes en orden cronológico ascendente.
  */
 export async function getMessages() {
@@ -21,7 +21,7 @@ export async function getMessages() {
 }
 
 /**
- * ✉️ Enviar un mensaje nuevo al chat global.
+ * Enviar un mensaje nuevo al chat global.
  * Ahora guarda username y avatar_url además de email.
  */
 export async function sendMessage(sender_id, username, email, content, avatar_url = null) {
@@ -48,7 +48,7 @@ export async function sendMessage(sender_id, username, email, content, avatar_ur
 }
 
 /*
- * 🔔 Suscribirse en tiempo real a nuevos mensajes del chat global.
+ * Suscribirse en tiempo real a nuevos mensajes del chat global.
  * Llama al callback cada vez que se inserta un nuevo mensaje.
  */
 export function subscribeToMessages(callback) {
@@ -62,15 +62,10 @@ export function subscribeToMessages(callback) {
                     if (payload?.new) callback(payload.new)
                 }
             )
-            .subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                    console.log('[global-chat.js] Escuchando mensajes en tiempo real...')
-                }
-            })
+            .subscribe()
 
         return () => {
             channel.unsubscribe()
-            console.log('[global-chat.js] Suscripción al chat cancelada.')
         }
     } catch (err) {
         console.error('[global-chat.js:subscribeToMessages] Error al suscribirse:', err.message)

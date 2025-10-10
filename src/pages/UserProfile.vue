@@ -136,8 +136,8 @@ export default {
 
         <div v-else class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- CABECERA PERFIL -->
-            <div
-                class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 py-8 border-b border-gray-800">
+            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 py-8 border-b border-gray-800">
+                <!-- Avatar -->
                 <div class="relative">
                     <div
                         class="w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
@@ -150,11 +150,12 @@ export default {
                     <!-- Username y acciones -->
                     <div class="flex flex-col sm:flex-row sm:items-center gap-4">
                         <h1 class="text-xl sm:text-2xl font-light">{{ user.username }}</h1>
-                        <div v-if="currentUser.id && currentUser.id !== user.id" class="flex gap-2">
-                            <button @click="toggleFollow" :disabled="followLoading"
-                                :class="isFollowingUser ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-[#EFB810] text-black hover:bg-yellow-400'"
-                                class="px-4 py-1.5 text-sm font-medium rounded transition disabled:opacity-50">
-                                {{ followLoading ? 'Cargando...' : (isFollowingUser ? 'Siguiendo' : 'Seguir') }}
+                        <div v-if="!user.userId" class="flex gap-2">
+                            <button class="px-4 py-1.5 bg-[#EFB810] text-black text-sm font-medium rounded hover:bg-yellow-400 transition">
+                                Seguir
+                            </button>
+                            <button class="px-4 py-1.5 bg-gray-700 text-white text-sm font-medium rounded hover:bg-gray-600 transition">
+                                Mensaje
                             </button>
                             <span v-if="user.verified"
                                 class="inline-flex items-center px-2 py-1 bg-blue-600 text-xs font-medium rounded-full text-white">
@@ -242,8 +243,8 @@ export default {
                         class="aspect-square bg-[#1C1C1C] border border-gray-800 overflow-hidden hover:opacity-75 transition-opacity group relative">
                         <RouterLink :to="'/movies/' + movie.id" class="block w-full h-full">
                             <img :src="movie.poster" :alt="movie.titulo" class="w-full h-full object-cover" />
-                            <div
-                                class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <!-- Overlay en hover para mostrar stats -->
+                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <div class="flex items-center gap-4 text-white text-sm font-semibold">
                                     <div class="flex items-center gap-1">
                                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

@@ -14,7 +14,8 @@ export default {
             .select('*, user_profiles(username, avatar_url)')
             .order('created_at', { ascending: false })
 
-        if (error) console.error('Error al cargar películas:', error.message)
+        if (error) {
+        }
         this.movies = data || []
     },
 }
@@ -31,12 +32,10 @@ export default {
             </h2>
         </div>
 
-        <!-- Feed estilo Instagram -->
         <div class="flex flex-col gap-10 max-w-3xl mx-auto">
             <MovieCard v-for="movie in movies" :key="movie.id" :movie="movie" />
         </div>
 
-        <!-- Botón flotante para crear publicación -->
         <RouterLink to="/movies/crear"
             class="fixed bottom-8 right-8 bg-[#EFB810] text-black w-14 h-14 flex items-center justify-center rounded-full shadow-lg hover:bg-yellow-400 transition z-50">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

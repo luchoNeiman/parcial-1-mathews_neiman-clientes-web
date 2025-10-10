@@ -1,6 +1,7 @@
 <script>
 import { subscribeToAuthStateChanges, logout } from '../services/auth'
 import { supabase } from '../services/supabase.js'
+import { getFollowStats } from '../services/follows'
 
 export default {
     name: 'MyProfile',
@@ -18,22 +19,57 @@ export default {
                 verified: false,
             },
             movies: [],
+            followersCount: 0,
+            followingCount: 0,
+            statsLoading: true,
         }
     },
-    mounted() {
+    async mounted() {
+        try {
+            const { data: { user: currentUser } } = await supabase.auth.getUser()
+
+            if (currentUser) {
+                const [profileResult] = await Promise.all([
+                    supabase
+                        .from('user_profiles')
+                        .select('*')
+                        .eq('id', currentUser.id)
+                        .single()
+                ])
+
+                if (profileResult.data) {
+                    this.user = profileResult.data
+
+                    await Promise.all([
+                        this.fetchMovies(),
+                        this.fetchFollowStats()
+                    ])
+                }
+            }
+        } catch (error) {
+        } finally {
+            this.statsLoading = false
+        }
+
+        // Mantener suscripción solo para updates
         subscribeToAuthStateChanges(async (newUserState) => {
-            this.user = newUserState
-            await this.fetchMovies()
+            if (newUserState.id && newUserState.id !== this.user.id) {
+                this.user = newUserState
+                await this.fetchFollowStats()
+            }
         })
     },
     methods: {
         async fetchMovies() {
             if (!this.user.id) return
+
             const { data, error } = await supabase
                 .from('movies')
                 .select('*')
                 .eq('user_id', this.user.id)
-            if (error) console.error('Error al cargar películas del usuario:', error.message)
+
+            if (error) {
+            }
             this.movies = data || []
 
             // Cargar likes y comentarios para cada película
@@ -43,23 +79,26 @@ export default {
         },
 
         async fetchMovieStats() {
-            for (let movie of this.movies) {
-                // Obtener count de likes
-                const { count: likesCount } = await supabase
-                    .from('likes')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('movie_id', movie.id)
-
-                // Obtener count de comentarios
-                const { count: commentsCount } = await supabase
-                    .from('comments')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('movie_id', movie.id)
+            // Crear todas las promesas para likes y comentarios en paralelo
+            const statsPromises = this.movies.map(async (movie) => {
+                const [likesResult, commentsResult] = await Promise.all([
+                    supabase
+                        .from('likes')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('movie_id', movie.id),
+                    supabase
+                        .from('comments')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('movie_id', movie.id)
+                ])
 
                 // Agregar las estadísticas al objeto de la película
-                movie.likesCount = likesCount || 0
-                movie.commentsCount = commentsCount || 0
-            }
+                movie.likesCount = likesResult.count || 0
+                movie.commentsCount = commentsResult.count || 0
+            })
+
+            // Ejecutar todas las promesas en paralelo
+            await Promise.all(statsPromises)
         },
         handleLogout() {
             logout()
@@ -67,6 +106,27 @@ export default {
         },
         goToEditProfile() {
             this.$router.push('/mi-perfil/editar')
+        },
+
+        async fetchFollowStats() {
+            if (!this.user.id) return
+
+            try {
+                const [followersResult, followingResult] = await Promise.all([
+                    supabase
+                        .from('follows')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('following_id', this.user.id),
+                    supabase
+                        .from('follows')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('follower_id', this.user.id)
+                ])
+
+                this.followersCount = followersResult.count || 0
+                this.followingCount = followingResult.count || 0
+            } catch (error) {
+            }
         },
     },
 }
@@ -77,7 +137,6 @@ export default {
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- CABECERA PERFIL -->
             <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 py-8 border-b border-gray-800">
-                <!-- Avatar -->
                 <div class="relative">
                     <div class="w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
                         <img :src="user.avatar_url || '/default-avatar.png'" alt="Avatar"
@@ -92,7 +151,6 @@ export default {
                     </button>
                 </div>
 
-                <!-- Info -->
                 <div class="flex-1 text-center sm:text-left space-y-4">
                     <!-- Username y acciones -->
                     <div class="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -119,11 +177,13 @@ export default {
                             <span class="text-gray-400 ml-1">publicaciones</span>
                         </div>
                         <div class="text-center sm:text-left">
-                            <span class="font-semibold">128</span>
+                            <span v-if="statsLoading" class="inline-block w-8 h-4 bg-gray-700 rounded animate-pulse"></span>
+                            <span v-else class="font-semibold">{{ followersCount }}</span>
                             <span class="text-gray-400 ml-1">seguidores</span>
                         </div>
                         <div class="text-center sm:text-left">
-                            <span class="font-semibold">97</span>
+                            <span v-if="statsLoading" class="inline-block w-8 h-4 bg-gray-700 rounded animate-pulse"></span>
+                            <span v-else class="font-semibold">{{ followingCount }}</span>
                             <span class="text-gray-400 ml-1">seguidos</span>
                         </div>
                     </div>
@@ -175,7 +235,6 @@ export default {
                         class="aspect-square bg-[#1C1C1C] border border-gray-800 overflow-hidden hover:opacity-75 transition-opacity group relative">
                         <RouterLink :to="'/movies/' + movie.id" class="block w-full h-full">
                             <img :src="movie.poster" :alt="movie.titulo" class="w-full h-full object-cover" />
-                            <!-- Overlay en hover para mostrar stats -->
                             <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <div class="flex items-center gap-4 text-white text-sm font-semibold">
                                     <div class="flex items-center gap-1">

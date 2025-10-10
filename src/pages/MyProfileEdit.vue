@@ -50,7 +50,6 @@ export default {
                 await updateAuthUser(this.formData)
                 this.$router.push('/mi-perfil')
             } catch (error) {
-                console.error('Error al actualizar perfil:', error.message)
                 alert('Error al guardar cambios. Verificá tu conexión o permisos.')
             } finally {
                 this.loading = false
@@ -81,10 +80,14 @@ export default {
 <template>
     <section class="pt-24 px-6 flex flex-col items-center min-h-screen bg-[#121212] text-white">
         <div class="bg-[#1C1C1C] border border-gray-700 rounded-xl shadow-xl p-8 max-w-md w-full">
-            <h1 class="text-[#EFB810] text-center mb-6 text-2xl font-bold">Editar Perfil ✏️</h1>
+            <h1 class="text-[#EFB810] text-center mb-6 text-2xl font-bold flex items-center justify-center gap-2">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                </svg>
+                Editar Perfil
+            </h1>
 
             <form @submit.prevent="handleSubmit" class="flex flex-col gap-5">
-                <!-- Avatar con preview -->
                 <div class="flex flex-col items-center relative">
                     <div
                         class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#EFB810] cursor-pointer group">

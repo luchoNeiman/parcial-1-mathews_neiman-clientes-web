@@ -23,7 +23,6 @@ async function loadCurrentUserAuthState() {
     const { data, error } = await supabase.auth.getUser()
 
     if (error || !data?.user) {
-        console.warn('[auth.js] No hay usuario autenticado.')
         return
     }
 
@@ -44,16 +43,12 @@ async function fetchFullProfile() {
     }
 }
 
-/*------------------------------------------------------------------------------
-| AUTH METHODS
-+------------------------------------------------------------------------------*/
 
 export async function register(email, password) {
     try {
         const { data, error } = await supabase.auth.signUp({ email, password })
 
         if (error) {
-            console.error('[auth.js register] Error al registrar usuario.', error)
             throw new Error(error.message)
         }
 
@@ -76,7 +71,7 @@ export async function register(email, password) {
             username: email.split('@')[0],
         })
     } catch (error) {
-        console.error('[auth.js register] Error inesperado:', error.message)
+        throw error
     }
 }
 
@@ -87,7 +82,6 @@ export async function login(email, password) {
     })
 
     if (error) {
-        console.error('[auth.js login] Error al iniciar sesión.', error)
         throw new Error(error.message)
     }
 
@@ -120,13 +114,10 @@ export async function updateAuthUser(data) {
         await updateUserProfile(user.id, data)
         setUser(data)
     } catch (error) {
-        console.error('[auth.js updateAuthUser] Error al actualizar perfil:', error)
+        throw error
     }
 }
 
-/*------------------------------------------------------------------------------
-| OBSERVER PATTERN
-+------------------------------------------------------------------------------*/
 
 export function subscribeToAuthStateChanges(callback) {
     observers.push(callback)
@@ -138,23 +129,14 @@ export function subscribeToAuthStateChanges(callback) {
     }
 }
 
-/**
- * Notifica un único observer con el estado actual.
- */
 function notify(callback) {
     callback({ ...user }) // se pasa una copia
 }
 
-/**
- * Notifica a todos los observers suscriptos.
- */
 function notifyAll() {
     observers.forEach(notify)
 }
 
-/**
- * Actualiza el estado local del usuario y notifica a los observers.
- */
 function setUser(data) {
     user = {
         ...user,
