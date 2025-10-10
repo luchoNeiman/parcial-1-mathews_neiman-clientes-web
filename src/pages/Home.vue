@@ -35,7 +35,6 @@ export default {
                     this.recentMovies = data || []
                 }
             } catch (error) {
-                // Error handling for loading recent movies
             } finally {
                 this.loading = false
             }
@@ -53,8 +52,11 @@ export default {
                     this.suggestedUsers = data || []
                 }
             } catch (error) {
-                // Error handling for loading suggested users
             }
+        },
+
+        getProfileLink(userId) {
+            return this.user.id === userId ? '/mi-perfil' : `/usuario/${userId}`
         }
     },
     async mounted() {
@@ -213,7 +215,7 @@ export default {
                                             class="w-full h-full rounded-full object-cover bg-[#121212]" />
                                     </div>
                                     <div class="flex-1 min-w-0">
-                                        <RouterLink :to="`/usuario/${suggestedUser.id}`"
+                                        <RouterLink :to="getProfileLink(suggestedUser.id)"
                                             class="font-medium text-white hover:text-gray-300 transition text-sm block truncate">
                                             {{ suggestedUser.username }}
                                         </RouterLink>

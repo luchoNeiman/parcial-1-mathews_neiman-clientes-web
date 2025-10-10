@@ -12,7 +12,7 @@ export default {
             loading: false,
             notification: {
                 show: false,
-                type: '', // 'success' or 'error'
+                type: '',
                 message: '',
                 title: ''
             },
@@ -93,7 +93,6 @@ export default {
                 this.form = { titulo: '', description: '', posterFile: null }
                 this.posterPreview = ''
 
-                // Redirigir a la página de películas después de 2 segundos
                 setTimeout(() => {
                     this.$router.push('/movies')
                 }, 2000)
@@ -178,7 +177,7 @@ export default {
                         <p class="text-xs text-gray-500 mt-1">PNG, JPG hasta 10MB</p>
                     </div>
                     <input type="file" accept="image/*" class="hidden" @change="handleFileChange" />
-                    <img v-if="posterPreview" :src="posterPreview" alt="poster preview"
+                    <img v-if="posterPreview" :src="posterPreview" alt="poster preview" loading="lazy"
                         class="w-48 h-72 object-cover rounded-lg border-2 border-[#EFB810] mt-4 shadow-lg" />
                 </label>
 

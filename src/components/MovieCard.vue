@@ -82,6 +82,10 @@ export default {
                 await this.fetchComments()
             }
         },
+
+        getProfileLink(userId) {
+            return this.user.id === userId ? '/mi-perfil' : `/usuario/${userId}`
+        }
     },
     async mounted() {
         subscribeToAuthStateChanges((newUser) => (this.user = newUser))
@@ -95,9 +99,9 @@ export default {
 <template>
     <article class="bg-[#1C1C1C] rounded-xl shadow-md border border-gray-700 overflow-hidden">
         <div class="flex items-center gap-3 p-3 border-b border-gray-700">
-            <RouterLink :to="'/usuario/' + movie.user_id" class="flex items-center gap-3 hover:opacity-80 transition">
+            <RouterLink :to="getProfileLink(movie.user_id)" class="flex items-center gap-3 hover:opacity-80 transition">
                 <img :src="movie.user_profiles?.avatar_url || '/default-avatar.png'"
-                    class="w-10 h-10 rounded-full object-cover border border-[#EFB810]" />
+                    loading="lazy" class="w-10 h-10 rounded-full object-cover border border-[#EFB810]" />
                 <div>
                     <p class="font-semibold text-[#EFB810]">
                         {{ movie.user_profiles?.username || 'Anónimo' }}
@@ -110,7 +114,7 @@ export default {
         </div>
 
         <RouterLink :to="'/movies/' + movie.id">
-            <img :src="movie.poster" :alt="movie.titulo" class="w-full max-h-[600px] object-cover" />
+            <img :src="movie.poster" :alt="movie.titulo" loading="lazy" class="w-full max-h-[600px] object-cover" />
         </RouterLink>
 
         <div class="flex items-center gap-6 px-4 py-3">
@@ -122,7 +126,7 @@ export default {
 
         <div class="px-4 pb-2">
             <p class="text-white text-sm leading-snug">
-                <RouterLink :to="'/usuario/' + movie.user_id" class="font-semibold text-[#EFB810] mr-2 hover:text-yellow-400 transition">{{
+                <RouterLink :to="getProfileLink(movie.user_id)" class="font-semibold text-[#EFB810] mr-2 hover:text-yellow-400 transition">{{
                     movie.user_profiles?.username || 'Anónimo'
                     }}</RouterLink>
                 {{ movie.description }}

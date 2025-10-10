@@ -141,7 +141,7 @@ export default {
                 <div class="relative">
                     <div
                         class="w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
-                        <img :src="user.avatar_url || '/default-avatar.png'" alt="Avatar"
+                        <img :src="user.avatar_url || '/default-avatar.png'" alt="Avatar" loading="lazy"
                             class="w-full h-full rounded-full object-cover bg-[#121212]" />
                     </div>
                 </div>

@@ -61,7 +61,7 @@ export default {
 
                 let posterUrl = this.movie.poster
 
-                // 🟡 Si el usuario sube un nuevo póster
+                // Si el usuario sube un nuevo póster
                 if (this.form.posterFile) {
                     const file = this.form.posterFile
                     const fileName = `${this.user.id}-${Date.now()}-${file.name}`
@@ -79,7 +79,7 @@ export default {
                     posterUrl = urlData.publicUrl
                 }
 
-                // 🔵 Actualizar película
+                // Actualizar película
                 const { error: updateError } = await supabase
                     .from('movies')
                     .update({
@@ -175,7 +175,7 @@ export default {
                 <!-- Poster -->
                 <div class="flex flex-col items-center gap-3">
                     <label for="poster" class="block mb-1 text-gray-300">Póster actual</label>
-                    <img :src="movie.poster" alt="Póster actual"
+                    <img :src="movie.poster" alt="Póster actual" loading="lazy"
                         class="w-48 h-64 object-cover border-2 border-[#EFB810] rounded" />
                     <input type="file" id="poster" accept="image/*" @change="handleFileChange"
                         class="w-full text-sm text-gray-300 border border-gray-600 rounded bg-[#2A2A2A] p-2 cursor-pointer" />

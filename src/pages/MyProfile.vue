@@ -139,7 +139,7 @@ export default {
             <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 sm:gap-8 py-8 border-b border-gray-800">
                 <div class="relative">
                     <div class="w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
-                        <img :src="user.avatar_url || '/default-avatar.png'" alt="Avatar"
+                        <img :src="user.avatar_url || '/default-avatar.png'" alt="Avatar" 
                             class="w-full h-full rounded-full object-cover bg-[#121212]" />
                     </div>
                     <button @click="goToEditProfile"
@@ -234,7 +234,7 @@ export default {
                     <div v-for="movie in movies" :key="movie.id"
                         class="aspect-square bg-[#1C1C1C] border border-gray-800 overflow-hidden hover:opacity-75 transition-opacity group relative">
                         <RouterLink :to="'/movies/' + movie.id" class="block w-full h-full">
-                            <img :src="movie.poster" :alt="movie.titulo" class="w-full h-full object-cover" />
+                            <img :src="movie.poster" :alt="movie.titulo" loading="lazy" class="w-full h-full object-cover" />
                             <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <div class="flex items-center gap-4 text-white text-sm font-semibold">
                                     <div class="flex items-center gap-1">

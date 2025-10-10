@@ -133,6 +133,10 @@ export default {
                 }
             } catch (error) {
             }
+        },
+
+        getProfileLink(userId) {
+            return this.user.id === userId ? '/mi-perfil' : `/usuario/${userId}`
         }
     }
 }
@@ -151,20 +155,26 @@ export default {
                 </button>
             </div>
 
-            <div class="flex flex-col lg:flex-row gap-0 lg:gap-8 bg-[#1C1C1C] border border-gray-800 rounded-lg overflow-hidden">
-                <div class="lg:w-3/5">
-                    <img :src="movie.poster" :alt="movie.titulo"
-                        class="w-full h-64 sm:h-80 md:h-96 lg:h-[600px] xl:h-[700px] object-cover" />
+            <div class="flex flex-col xl:flex-row gap-0 xl:gap-8 bg-[#1C1C1C] border border-gray-800 rounded-lg overflow-hidden">
+                <!-- Imagen con fondo difuminado para todas las pantallas -->
+                <div class="xl:w-3/5 relative bg-cover bg-center bg-no-repeat image-container"
+                     :style="{ 'background-image': `url(${movie.poster})` }">
+                    <!-- Imagen principal centrada -->
+                    <div class="flex items-center justify-center h-full p-4 sm:p-6 xl:p-8">
+                        <img :src="movie.poster" :alt="movie.titulo" loading="lazy"
+                            class="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-[400px] h-auto object-cover rounded-lg shadow-2xl relative z-10" />
+                    </div>
                 </div>
 
-                <div class="lg:w-2/5 flex flex-col min-w-0">
+                <!-- Panel lateral más compacto en pantallas grandes -->
+                <div class="xl:w-2/5 flex flex-col min-w-0">
                     <div class="flex items-center gap-3 p-4 border-b border-gray-800">
                         <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5">
-                            <img :src="movie.user_profiles?.avatar_url || '/default-avatar.png'"
+                            <img :src="movie.user_profiles?.avatar_url || '/default-avatar.png'" 
                                 class="w-full h-full rounded-full object-cover bg-[#121212]" />
                         </div>
                         <div class="flex-1">
-                            <RouterLink :to="'/usuario/' + movie.user_id"
+                            <RouterLink :to="getProfileLink(movie.user_id)"
                                 class="font-semibold text-white hover:text-gray-300 transition">
                                 {{ movie.user_profiles?.username || 'Anónimo' }}
                             </RouterLink>
@@ -179,54 +189,57 @@ export default {
                     </div>
 
                     <div class="flex-1 flex flex-col content-container">
-                        <div class="p-4 lg:p-6 space-y-3 lg:space-y-4 flex-shrink-0">
-                            <h1 class="text-xl lg:text-2xl font-bold text-[#EFB810]">{{ movie.titulo }}</h1>
-                            <p class="text-sm lg:text-base text-gray-300 leading-relaxed">
+                        <!-- Información más compacta para pantallas grandes -->
+                        <div class="p-4 xl:p-5 space-y-3 flex-shrink-0">
+                            <h1 class="text-xl xl:text-xl font-bold text-[#EFB810]">{{ movie.titulo }}</h1>
+                            <p class="text-sm xl:text-sm text-gray-300 leading-relaxed">
                                 <span class="font-semibold text-white mr-2">{{ movie.user_profiles?.username || 'Anónimo' }}</span>
                                 {{ movie.description }}
                             </p>
 
                             <div class="flex flex-wrap gap-2" v-if="movie.genre">
-                                <span class="px-3 py-1 bg-gray-800 text-xs lg:text-sm rounded-full text-gray-300">
+                                <span class="px-3 py-1 bg-gray-800 text-xs rounded-full text-gray-300">
                                     {{ movie.genre }}
                                 </span>
                             </div>
                         </div>
 
 
-                        <div class="p-4 lg:p-6 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
+                        <!-- Acciones más compactas -->
+                        <div class="p-4 xl:p-5 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
                             <LikeButton :movieId="movie.id" />
 
-                            <div class="mt-3 text-xs lg:text-sm text-gray-500">
+                            <div class="mt-2 text-xs text-gray-500">
                                 <p>Publicado el {{ new Date(movie.created_at).toLocaleDateString('es-ES') }}</p>
                             </div>
                         </div>
 
+                        <!-- Comentarios optimizados para pantallas grandes -->
                         <div class="border-t border-gray-800 bg-[#1C1C1C] flex-1 flex flex-col comments-container">
-                            <div class="p-4 lg:p-6 border-b border-gray-800 flex-shrink-0">
-                                <h3 class="text-sm lg:text-base font-semibold text-gray-300">Comentarios</h3>
+                            <div class="p-4 xl:p-5 border-b border-gray-800 flex-shrink-0">
+                                <h3 class="text-sm font-semibold text-gray-300">Comentarios</h3>
                             </div>
 
                             <div class="flex-1 overflow-y-auto custom-scrollbar comments-scroll">
-                                <div v-if="loadingComments" class="p-4 lg:p-6 text-center">
+                                <div v-if="loadingComments" class="p-4 xl:p-5 text-center">
                                     <div class="animate-spin rounded-full h-6 w-6 border-2 border-[#EFB810] border-t-transparent mx-auto"></div>
                                 </div>
 
-                                <div v-else-if="comments.length" class="p-4 lg:p-6 space-y-4">
+                                <div v-else-if="comments.length" class="p-4 xl:p-5 space-y-3">
                                     <div v-for="comment in comments" :key="comment.id" class="flex gap-3">
-                                        <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0">
+                                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0">
                                             <img :src="comment.user_profiles?.avatar_url || '/default-avatar.png'"
                                                 class="w-full h-full rounded-full object-cover bg-[#121212]" />
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-sm lg:text-base leading-relaxed">
-                                                <RouterLink :to="'/usuario/' + comment.user_id"
+                                            <p class="text-sm leading-relaxed">
+                                                <RouterLink :to="getProfileLink(comment.user_id)"
                                                     class="font-semibold text-[#EFB810] hover:text-yellow-400 transition mr-2">
                                                     {{ comment.user_profiles?.username || 'Anónimo' }}
                                                 </RouterLink>
                                                 <span class="text-gray-300">{{ comment.content }}</span>
                                             </p>
-                                            <p class="text-xs lg:text-sm text-gray-500 mt-1">
+                                            <p class="text-xs text-gray-500 mt-1">
                                                 {{ new Date(comment.created_at).toLocaleDateString('es-ES', {
                                                     year: 'numeric',
                                                     month: 'short',
@@ -237,33 +250,34 @@ export default {
                                     </div>
                                 </div>
 
-                                <div v-else class="p-8 lg:p-12 text-center">
-                                    <div class="w-12 h-12 lg:w-16 lg:h-16 mx-auto mb-3 text-gray-600">
+                                <div v-else class="p-8 xl:p-10 text-center">
+                                    <div class="w-12 h-12 mx-auto mb-3 text-gray-600">
                                         <svg class="w-full h-full" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
                                         </svg>
                                     </div>
-                                    <p class="text-gray-400 text-sm lg:text-base font-medium">Sin comentarios aún</p>
-                                    <p class="text-gray-500 text-xs lg:text-sm mt-1">Sé el primero en comentar esta película</p>
+                                    <p class="text-gray-400 text-sm font-medium">Sin comentarios aún</p>
+                                    <p class="text-gray-500 text-xs mt-1">Sé el primero en comentar esta película</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-4 lg:p-6 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
-                            <div class="flex gap-3 lg:gap-4 items-start">
-                                <div class="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0 mt-0.5">
+                        <!-- Formulario de comentario más compacto -->
+                        <div class="p-4 xl:p-5 border-t border-gray-800 bg-[#1C1C1C] flex-shrink-0">
+                            <div class="flex gap-3 items-start">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0 mt-0.5">
                                     <img :src="user.avatar_url || '/default-avatar.png'"
                                         class="w-full h-full rounded-full object-cover bg-[#121212]" />
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <div class="flex flex-col sm:flex-row gap-2 lg:gap-3">
+                                    <div class="flex flex-col sm:flex-row gap-2">
                                         <input v-model="newComment" type="text" placeholder="Agregá un comentario..."
-                                            class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm lg:text-base text-gray-300 focus:outline-none focus:border-[#EFB810] placeholder-gray-500 min-w-0 transition"
+                                            class="flex-1 bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-300 focus:outline-none focus:border-[#EFB810] placeholder-gray-500 min-w-0 transition"
                                             @keyup.enter="postComment" />
                                         <button @click="postComment"
                                             :disabled="!newComment.trim()"
                                             :class="newComment.trim() ? 'bg-[#EFB810] hover:bg-yellow-400 text-black' : 'bg-gray-700 text-gray-500 cursor-not-allowed'"
-                                            class="px-4 py-2 text-sm lg:text-base font-semibold rounded-lg transition flex-shrink-0">
+                                            class="px-4 py-2 text-sm font-semibold rounded-lg transition flex-shrink-0">
                                             Publicar
                                         </button>
                                     </div>
@@ -289,7 +303,7 @@ export default {
                     <div v-for="relatedMovie in relatedMovies" :key="relatedMovie.id"
                         class="aspect-square bg-gray-800 rounded border border-gray-700 overflow-hidden hover:opacity-75 transition-opacity group relative">
                         <RouterLink :to="'/movies/' + relatedMovie.id" class="block w-full h-full">
-                            <img :src="relatedMovie.poster" :alt="relatedMovie.titulo"
+                            <img :src="relatedMovie.poster" :alt="relatedMovie.titulo" loading="lazy"
                                 class="w-full h-full object-cover" />
                             <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <p class="text-white text-sm font-medium text-center px-2">{{ relatedMovie.titulo }}</p>
@@ -331,11 +345,70 @@ export default {
 
 .comments-container {
     min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .comments-scroll {
     min-height: 200px;
     max-height: calc(100vh - 600px);
+}
+
+/* Imagen con fondo difuminado para todas las pantallas */
+.image-container {
+    position: relative;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    min-height: 200px;
+}
+
+.image-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
+    background-size: cover;
+    background-position: center;
+    filter: blur(15px) brightness(0.4);
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.image-container > div {
+    position: relative;
+    z-index: 2;
+}
+
+/* Optimización para pantallas grandes (1280px+) */
+@media (min-width: 1280px) {
+    .content-container {
+        height: 600px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .comments-container {
+        flex: 1;
+        min-height: 300px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .comments-scroll {
+        flex: 1;
+        min-height: 250px;
+        max-height: none;
+        overflow-y: auto;
+    }
+
+    .image-container::before {
+        filter: blur(20px) brightness(0.3);
+        transform: scale(1.1);
+    }
 }
 
 .custom-scrollbar::-webkit-scrollbar {

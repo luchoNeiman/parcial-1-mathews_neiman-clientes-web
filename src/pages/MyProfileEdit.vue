@@ -91,7 +91,7 @@ export default {
                 <div class="flex flex-col items-center relative">
                     <div
                         class="relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#EFB810] cursor-pointer group">
-                        <img :src="avatarPreview || '/default-avatar.png'" alt="avatar preview"
+                        <img :src="avatarPreview || '/default-avatar.png'" alt="avatar preview" loading="lazy"
                             class="object-cover w-full h-full group-hover:opacity-70 transition" />
                         <input type="file" accept="image/*" @change="handleFileChange"
                             class="absolute inset-0 opacity-0 cursor-pointer" />

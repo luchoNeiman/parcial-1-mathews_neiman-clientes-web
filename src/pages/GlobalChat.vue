@@ -98,7 +98,7 @@ export default {
                 :class="{ 'flex-row-reverse': message.sender_id === user.id }">
 
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0">
-                    <img :src="message.avatar_url || '/default-avatar.png'" alt="avatar"
+                    <img :src="message.avatar_url || '/default-avatar.png'" alt="avatar" loading="lazy"
                         class="w-full h-full rounded-full object-cover bg-[#121212]" />
                 </div>
 
@@ -147,7 +147,7 @@ export default {
             class="p-4 border-t border-gray-800 bg-[#1C1C1C]">
             <div class="flex items-end gap-3">
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 p-0.5 flex-shrink-0">
-                    <img :src="user.avatar_url || '/default-avatar.png'" alt="avatar"
+                    <img :src="user.avatar_url || '/default-avatar.png'" alt="avatar" loading="lazy"
                         class="w-full h-full rounded-full object-cover bg-[#121212]" />
                 </div>
 
