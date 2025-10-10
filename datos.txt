@@ -1,0 +1,10 @@
+Carrera: Diseño y Programación Web
+Materia: Clientes Web Mobile
+Cuatrimestre: 4to
+Año: 2do
+Turno: Tarde
+Comisión: DWT4AV
+Apellidos: Mathews, Neiman
+Nombres: Evelyn, Luciano
+Docente: Santiago Gallino
+Carácter de entrega: 1er parcial
