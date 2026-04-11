@@ -47,17 +47,17 @@ export default {
             </button>
 
             <div class="hidden w-full md:block md:w-auto">
-                <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-700 rounded-lg bg-gray-800 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent">
-                    <li>
+                <ul class="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-700 rounded-lg bg-gray-800 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-transparent items-center">
+                    <li class="md:flex md:items-center">
                         <RouterLink to="/"
-                            class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:border-0 md:hover:text-[#EFB810] md:p-0 transition"
+                            class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:border-0 md:hover:text-[#EFB810] md:p-0 transition md:flex md:items-center"
                             active-class="text-[#EFB810] bg-gray-700 md:bg-transparent">
                             Inicio
                         </RouterLink>
                     </li>
-                    <li>
+                    <li class="md:flex md:items-center">
                         <RouterLink to="/movies"
-                            class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:border-0 md:hover:text-[#EFB810] md:p-0 transition"
+                            class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:border-0 md:hover:text-[#EFB810] md:p-0 transition md:flex md:items-center"
                             active-class="text-[#EFB810] bg-gray-700 md:bg-transparent">
                             Películas
                         </RouterLink>
