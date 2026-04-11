@@ -125,11 +125,11 @@ cd parcial-1-mathews_neiman-clientes-web
 ```bash
 npm install
 ```
-3. **Configurar Supabase** 
-Las credenciales de Supabase ya están configuradas en el proyecto. Si querés usar tu propia instancia de Supabase, podés crear un archivo `.env` con:
+3. **Configurar Supabase**
+Creá un archivo `.env` con:
 ```env
-VITE_SUPABASE_URL=. 'https://msaisnrsgrlbyhxiaowt.supabase.co'
-VITE_SUPABASE_ANON_KEY= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1zYWlzbnJzZ3JsYnloeGlhb3d0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2OTk4MTQsImV4cCI6MjA3NTI3NTgxNH0.AIYruceFywIgOvHD9_MOXIMIw10IrjzPVGMveaUSRmY
+VITE_SUPABASE_URL=https://TU_PROJECT_REF.supabase.co
+VITE_SUPABASE_ANON_KEY=TU_ANON_PUBLIC_KEY
 ```
 
 4. **Correr en desarrollo**
@@ -141,6 +141,16 @@ npm run dev
 ```
 http://localhost:5173
 ```
+
+## Deploy en Vercel
+
+1. Importá el repo en Vercel.
+2. En Project Settings > Environment Variables agregá:
+```env
+VITE_SUPABASE_URL=https://TU_PROJECT_REF.supabase.co
+VITE_SUPABASE_ANON_KEY=TU_ANON_PUBLIC_KEY
+```
+3. Redeploy del proyecto.
 
 ##  Base de Datos (Supabase)
 
