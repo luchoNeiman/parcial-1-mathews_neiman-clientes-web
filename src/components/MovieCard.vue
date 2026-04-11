@@ -117,6 +117,14 @@ export default {
             <img :src="movie.poster" :alt="movie.titulo" loading="lazy" class="w-full max-h-[600px] object-cover" />
         </RouterLink>
 
+        <div class="px-4 pt-3">
+            <RouterLink :to="'/movies/' + movie.id" class="block hover:opacity-90 transition">
+                <h3 class="text-lg font-bold text-white leading-tight">
+                    {{ movie.titulo || 'Película sin título' }}
+                </h3>
+            </RouterLink>
+        </div>
+
         <div class="flex items-center gap-6 px-4 py-3">
             <button @click="toggleLike" class="focus:outline-none text-2xl">
                 <i :class="liked ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-300'"></i>
