@@ -67,6 +67,7 @@ export default {
                 .from('movies')
                 .select('*')
                 .eq('user_id', this.user.id)
+                .order('created_at', { ascending: false })
 
             if (error) {
             }

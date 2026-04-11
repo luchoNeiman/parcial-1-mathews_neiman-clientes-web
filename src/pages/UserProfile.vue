@@ -46,6 +46,7 @@ export default {
                 .from('movies')
                 .select('*')
                 .eq('user_id', userId)
+                .order('created_at', { ascending: false })
             if (error) {
             }
             this.movies = data || []
