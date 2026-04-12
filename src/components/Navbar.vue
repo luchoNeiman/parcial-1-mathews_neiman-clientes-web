@@ -35,7 +35,7 @@ export default {
             <RouterLink to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                 <img src="/favicon.png" class="h-8" alt="Logo" />
                 <span class="self-center text-xl font-semibold whitespace-nowrap text-[#EFB810] hover:text-yellow-400 transition hidden sm:block">
-                    Underground Cinema
+                    Underground
                 </span>
             </RouterLink>
 
@@ -59,7 +59,7 @@ export default {
                         <RouterLink to="/movies"
                             class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 md:hover:bg-transparent md:border-0 md:hover:text-[#EFB810] md:p-0 transition md:flex md:items-center"
                             active-class="text-[#EFB810] bg-gray-700 md:bg-transparent">
-                            Películas
+                            Películas y series
                         </RouterLink>
                     </li>
 
@@ -123,7 +123,7 @@ export default {
                         <RouterLink to="/movies" @click="mobileMenuOpen = false"
                             class="block py-2 px-3 text-gray-300 rounded hover:bg-gray-700 transition"
                             active-class="text-[#EFB810] bg-gray-700">
-                            Películas
+                            Películas y series
                         </RouterLink>
                     </li>
 

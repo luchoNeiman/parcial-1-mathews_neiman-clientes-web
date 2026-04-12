@@ -10,7 +10,7 @@ export default {
             <div class="flex flex-col items-center gap-3 sm:gap-4">
                 <div class="text-center space-y-2">
                     <p class="text-sm sm:text-base leading-relaxed">
-                        © 2025 <span class="text-[#EFB810] font-semibold">Underground Cinema</span>
+                        © 2025 <span class="text-[#EFB810] font-semibold">Underground</span>
                     </p>
                     <p class="text-xs sm:text-sm text-gray-500">
                         Proyecto académico de

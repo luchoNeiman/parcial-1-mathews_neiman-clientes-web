@@ -254,7 +254,7 @@ export default {
                                         </svg>
                                     </div>
                                     <p class="text-gray-400 text-sm font-medium">Sin comentarios aún</p>
-                                    <p class="text-gray-500 text-xs mt-1">Sé el primero en comentar esta película</p>
+                                    <p class="text-gray-500 text-xs mt-1">Sé el primero en comentar esta película o serie</p>
                                 </div>
                             </div>
                         </div>
@@ -315,7 +315,7 @@ export default {
                         </svg>
                     </div>
                     <p class="text-gray-400 text-sm">No hay nada que ver por acá</p>
-                    <p class="text-gray-500 text-xs mt-1">{{ movie.user_profiles?.username || 'Este usuario' }} no tiene más películas</p>
+                    <p class="text-gray-500 text-xs mt-1">{{ movie.user_profiles?.username || 'Este usuario' }} no tiene más películas o series</p>
                 </div>
 
                 <RouterLink v-if="user?.id && movie.user_id === user.id" :to="`/movies/editar/${movie.id}`"

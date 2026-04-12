@@ -34,7 +34,7 @@ export default {
                 .single()
 
             if (error) {
-                this.errorMessage = 'Error al cargar la película.'
+                this.errorMessage = 'Error al cargar la película o serie.'
                 return
             }
 
@@ -50,12 +50,12 @@ export default {
                 this.successMessage = ''
 
                 if (!this.user.id) {
-                    this.errorMessage = 'Tenés que iniciar sesión para editar la película.'
+                    this.errorMessage = 'Tenés que iniciar sesión para editar la película o serie.'
                     return
                 }
 
                 if (this.movie.user_id !== this.user.id) {
-                    this.errorMessage = 'No tenés permiso para editar esta película.'
+                    this.errorMessage = 'No tenés permiso para editar esta película o serie.'
                     return
                 }
 
@@ -92,10 +92,10 @@ export default {
 
                 if (updateError) throw updateError
 
-                this.successMessage = 'Película actualizada con éxito'
+                this.successMessage = 'Película o serie actualizada con éxito'
                 setTimeout(() => this.$router.push(`/movies/${this.movie.id}`), 1500)
             } catch (err) {
-                this.errorMessage = 'No se pudo actualizar la película. Verificá tus permisos.'
+                this.errorMessage = 'No se pudo actualizar la película o serie. Verificá tus permisos.'
             } finally {
                 this.loading = false
             }
@@ -119,11 +119,11 @@ export default {
 
                 if (error) throw error
 
-                this.successMessage = 'Película eliminada correctamente'
+                this.successMessage = 'Película o serie eliminada correctamente'
                 this.showDeleteModal = false
                 setTimeout(() => this.$router.push('/mi-perfil'), 1500)
             } catch (err) {
-                this.errorMessage = 'No se pudo eliminar la película. Verificá tus permisos.'
+                this.errorMessage = 'No se pudo eliminar la película o serie. Verificá tus permisos.'
             } finally {
                 this.loading = false
             }
@@ -136,7 +136,7 @@ export default {
             await this.fetchMovie()
 
             if (this.movie && this.movie.user_id !== this.user.id) {
-                this.errorMessage = 'No tenés permiso para editar esta película.'
+                this.errorMessage = 'No tenés permiso para editar esta película o serie.'
                 setTimeout(() => this.$router.push('/movies'), 2000)
             }
         })
@@ -147,7 +147,7 @@ export default {
 <template>
     <section class="pt-24 px-6 min-h-screen bg-[#121212] text-white flex flex-col items-center">
         <div class="bg-[#1C1C1C] border border-gray-700 rounded-xl shadow-xl p-8 w-full max-w-2xl flex flex-col gap-6">
-            <h1 class="text-3xl font-bold text-center text-[#EFB810]">Editar película</h1>
+            <h1 class="text-3xl font-bold text-center text-[#EFB810]">Editar película o serie</h1>
 
             <div v-if="!movie && !errorMessage" class="text-center text-gray-400 py-6">
                 Cargando información...
@@ -202,7 +202,7 @@ export default {
         <!-- Modal de confirmación -->
         <div v-if="showDeleteModal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div class="bg-[#1C1C1C] border border-gray-700 rounded-xl p-6 w-80 text-center shadow-2xl">
-                <h2 class="text-xl font-semibold text-[#EFB810] mb-4">¿Eliminar esta película?</h2>
+                <h2 class="text-xl font-semibold text-[#EFB810] mb-4">¿Eliminar esta película o serie?</h2>
                 <p class="text-gray-300 mb-6">Esta acción no se puede deshacer.</p>
 
                 <div class="flex justify-center gap-4">

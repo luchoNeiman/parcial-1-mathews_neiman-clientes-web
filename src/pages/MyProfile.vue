@@ -264,11 +264,11 @@ export default {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-xl font-light">Comparte tu primera película</h3>
-                    <p class="text-gray-400 text-sm">Cuando compartas películas, aparecerán en tu perfil.</p>
+                    <h3 class="text-xl font-light">Comparte tu primera película o serie</h3>
+                    <p class="text-gray-400 text-sm">Cuando compartas películas o series, aparecerán en tu perfil.</p>
                     <RouterLink to="/movies/crear"
                         class="inline-block px-6 py-2 bg-[#EFB810] text-black font-semibold rounded hover:bg-yellow-400 transition">
-                        Compartir tu primera película
+                        Compartir tu primera película o serie
                     </RouterLink>
                 </div>
             </div>

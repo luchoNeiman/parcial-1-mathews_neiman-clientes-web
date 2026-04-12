@@ -120,7 +120,7 @@ export default {
         <div class="px-4 pt-3">
             <RouterLink :to="'/movies/' + movie.id" class="block hover:opacity-90 transition">
                 <h3 class="text-lg font-bold text-white leading-tight">
-                    {{ movie.titulo || 'Película sin título' }}
+                    {{ movie.titulo || 'Película o serie sin título' }}
                 </h3>
             </RouterLink>
         </div>

@@ -86,14 +86,14 @@ export default {
             <!-- CONTENIDO -->
             <div class="relative z-10 px-4">
                 <h1 class="text-4xl md:text-5xl font-bold mb-4 text-[#EFB810] drop-shadow-md">
-                    Underground Cinema
+                    Underground
                 </h1>
                 <p class="max-w-xl mx-auto text-base text-gray-200 leading-relaxed mb-6">
-                    Descubre películas de culto, comparte tus favoritas y conecta con otros cinéfilos
+                    Descubre películas y series de culto, comparte tus favoritas y conecta con otros cinéfilos
                 </p>
                 <RouterLink to="/movies"
                     class="inline-block px-6 py-2 bg-[#EFB810] text-black font-semibold rounded-lg hover:bg-yellow-400 transition">
-                    Explorar películas
+                    Explorar películas y series
                 </RouterLink>
             </div>
         </section>
@@ -115,7 +115,7 @@ export default {
                             </div>
                             <div class="flex-1">
                                 <h3 class="font-semibold text-white">Bienvenido, {{ user.username || 'Cinéfilo' }}!</h3>
-                                <p class="text-sm text-gray-400">Descubre las últimas películas de la comunidad</p>
+                                <p class="text-sm text-gray-400">Descubre las últimas películas y series de la comunidad</p>
                             </div>
                             <RouterLink to="/movies/crear"
                                 class="px-4 py-2 bg-[#EFB810] text-black font-medium rounded-lg hover:bg-yellow-400 transition text-sm">
@@ -167,7 +167,7 @@ export default {
                                 </svg>
                             </div>
                             <h3 class="text-lg font-medium text-gray-300 mb-2">No hay publicaciones aún</h3>
-                            <p class="text-gray-500 text-sm mb-4">Sé el primero en compartir una película</p>
+                            <p class="text-gray-500 text-sm mb-4">Sé el primero en compartir una película o serie</p>
                             <RouterLink to="/movies/crear"
                                 class="inline-block px-6 py-2 bg-[#EFB810] text-black font-semibold rounded-lg hover:bg-yellow-400 transition">
                                 Crear primera publicación
@@ -238,7 +238,7 @@ export default {
                                 </div>
                             </div>
                             <h3 class="font-semibold text-white mb-2">Únete a la comunidad</h3>
-                            <p class="text-sm text-gray-400 mb-4">Conecta con otros cinéfilos y comparte tus películas favoritas</p>
+                            <p class="text-sm text-gray-400 mb-4">Conecta con otros cinéfilos y comparte tus películas y series favoritas</p>
                             <div class="space-y-2">
                                 <RouterLink to="/register"
                                     class="block w-full px-4 py-2 bg-[#EFB810] text-black font-semibold rounded-lg hover:bg-yellow-400 transition">
@@ -253,7 +253,7 @@ export default {
 
                         <!-- Info adicional -->
                         <div class="bg-[#1C1C1C] border border-gray-800 rounded-lg p-4">
-                            <h3 class="font-semibold text-white mb-3">Acerca de Underground Cinema</h3>
+                            <h3 class="font-semibold text-white mb-3">Acerca de Underground</h3>
                             <p class="text-sm text-gray-400 leading-relaxed">
                                 Una comunidad dedicada al cine alternativo, independiente y de culto.
                                 Descubre joyas ocultas y conecta con otros amantes del séptimo arte.

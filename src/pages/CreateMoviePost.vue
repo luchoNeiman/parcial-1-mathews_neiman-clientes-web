@@ -54,12 +54,12 @@ export default {
             }
 
             if (!this.user.id) {
-                this.showNotification('error', 'Sesión requerida', 'Tenés que iniciar sesión para publicar una película.')
+                this.showNotification('error', 'Sesión requerida', 'Tenés que iniciar sesión para publicar una película o serie.')
                 return
             }
 
             if (!this.form.posterFile) {
-                this.showNotification('error', 'Imagen requerida', 'Subí una imagen para el póster de la película.')
+                this.showNotification('error', 'Imagen requerida', 'Subí una imagen para el póster de la película o serie.')
                 return
             }
 
@@ -89,7 +89,7 @@ export default {
 
                 if (dbError) throw dbError
 
-                this.showNotification('success', '¡Película publicada!', `"${this.form.titulo}" se agregó exitosamente a tu perfil.`)
+                this.showNotification('success', '¡Película o serie publicada!', `"${this.form.titulo}" se agregó exitosamente a tu perfil.`)
                 this.form = { titulo: '', description: '', posterFile: null }
                 this.posterPreview = ''
 
@@ -97,7 +97,7 @@ export default {
                     this.$router.push('/movies')
                 }, 2000)
             } catch (error) {
-                this.showNotification('error', 'Error al publicar', 'No se pudo subir la película. Revisá tu conexión e intentá de nuevo.')
+                this.showNotification('error', 'Error al publicar', 'No se pudo subir la película o serie. Revisá tu conexión e intentá de nuevo.')
             } finally {
                 this.loading = false
             }
@@ -159,7 +159,7 @@ export default {
             </div>
 
             <form @submit.prevent="handleSubmit" class="flex flex-col gap-5">
-                <input v-model="form.titulo" placeholder="Título de la película"
+                <input v-model="form.titulo" placeholder="Título de la película o serie"
                     class="p-3 rounded-lg bg-[#2A2A2A] border border-gray-600 text-white focus:border-[#EFB810] focus:outline-none transition" required />
 
                 <textarea v-model="form.description" rows="4" placeholder="Descripción o reseña"
@@ -172,7 +172,7 @@ export default {
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                         </svg>
                         <span class="text-gray-400 group-hover:text-[#EFB810] transition">
-                            {{ posterPreview ? 'Cambiar póster' : 'Subir póster de la película' }}
+                            {{ posterPreview ? 'Cambiar póster' : 'Subir póster de la película o serie' }}
                         </span>
                         <p class="text-xs text-gray-500 mt-1">PNG, JPG hasta 10MB</p>
                     </div>
@@ -184,7 +184,7 @@ export default {
                 <button type="submit" :disabled="loading"
                     class="px-6 py-3 rounded-lg bg-[#EFB810] text-black font-semibold hover:bg-yellow-400 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                     <span v-if="loading" class="animate-spin rounded-full h-4 w-4 border-2 border-black border-t-transparent"></span>
-                    {{ loading ? 'Publicando...' : 'Publicar película' }}
+                    {{ loading ? 'Publicando...' : 'Publicar película o serie' }}
                 </button>
             </form>
         </div>

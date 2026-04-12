@@ -1,17 +1,17 @@
-# Underground Cinema
+# Underground
 
 **Una red social para cinéfilos**
 
-Underground Cinema es una red social dedicada a los amantes del cine independiente, los clásicos de culto y las joyas ocultas del séptimo arte. La plataforma permite a los usuarios compartir sus películas favoritas, crear publicaciones con imágenes, dejar comentarios, reaccionar con "me gusta" y participar de un chat global con la comunidad cinéfila.
+Underground es una red social dedicada a los amantes del cine independiente, las series de culto y las joyas ocultas del séptimo arte. La plataforma permite a los usuarios compartir sus películas y series favoritas, crear publicaciones con imágenes, dejar comentarios, reaccionar con "me gusta" y participar de un chat global con la comunidad cinéfila.
 
 ## ¿Qué hicimos?
 
 Creamos una app para los cinefilos amantes del arte que no se encuentra en medios mainstream. La idea era crear un lugar donde podés:
 
-- **Subir fotos de las películas que te gustaron** (como postear en Instagram pero con posters de películas)
+- **Subir fotos de las películas y series que te gustaron** (como postear en Instagram pero con posters de películas y series)
 - **Comentar y dar like** a las recomendaciones de otros usuarios
 - **Chatear con toda la comunidad** sobre cine en tiempo real
-- **Tener tu perfil personalizado** con tu avatar y tus películas favoritas
+- **Tener tu perfil personalizado** con tu avatar y tus películas y series favoritas
 
 ## Tecnología
 
@@ -50,19 +50,19 @@ No inventamos la rueda. Instagram tiene la UX más estudiada del mundo, así que
 
 ### Página de Inicio
 - **Video de fondo** para dar impacto visual
-- **Feed de películas recientes** de la comunidad
+- **Feed de películas y series recientes** de la comunidad
 - **Sugerencias de perfiles** para explorar
 - **Call-to-action**  para registrarse
 
-### Gestión de Películas
-- **Subir películas** con poster, título y descripción
+### Gestión de Películas y Series
+- **Subir películas y series** con poster, título y descripción
 - **Ver detalle completo** con comentarios y likes
 - **Editar/eliminar** tus propias publicaciones
 - **Sistema de likes** en tiempo real
 
 ###  Perfiles de Usuario
 - **Perfil personalizable** con avatar y bio
-- **Grid de películas**
+- **Grid de películas y series**
 - **Estadísticas reales** de publicaciones, seguidores y seguidos
 - **Sistema de seguimiento** entre usuarios
 - **Vista pública** para otros usuarios
@@ -87,12 +87,12 @@ Implementamos un sistema completo de seguimiento entre usuarios similar a Instag
 src/
 ├── components/          # Componentes reutilizables
 │   ├── Navbar.vue      # Navegación principal
-│   ├── MovieCard.vue   # Card de película para el feed
+│   ├── MovieCard.vue   # Card de película o serie para el feed
 │   └── LikeButton.vue  # Botón de like interactivo
 ├── pages/               # Vistas principales
 │   ├── Home.vue        # Página de inicio con feed
-│   ├── Movies.vue      # Listado de todas las películas
-│   ├── MovieDetail.vue # Detalle de película individual
+│   ├── Movies.vue      # Listado de todas las películas y series
+│   ├── MovieDetail.vue # Detalle de película o serie individual
 │   ├── MyProfile.vue   # Perfil del usuario logueado
 │   ├── UserProfile.vue # Perfil de otros usuarios
 │   ├── GlobalChat.vue  # Chat de la comunidad
@@ -156,19 +156,19 @@ VITE_SUPABASE_ANON_KEY=TU_ANON_PUBLIC_KEY
 
 ### Tablas principales:
 - `user_profiles` - Información de usuarios
-- `movies` - Publicaciones de películas
-- `comments` - Comentarios en las películas
+- `movies` - Publicaciones de películas y series
+- `comments` - Comentarios en las películas y series
 - `likes` - Sistema de reacciones
 - `follows` - Sistema de seguimiento entre usuarios
 - `messages` - Chat global
 
 ### Storage:
 - `avatars` - Fotos de perfil de usuarios
-- `posters` - Imágenes de las películas
+- `posters` - Imágenes de las películas y series
 
 ##  Features que nos gustaria  implementar a futuro
 - Notificaciones push
-- Búsqueda avanzada de películas
+- Búsqueda avanzada de películas y series
 - Filtros por género/año
 - Sistema de recomendaciones
 - Chat privado entre usuarios

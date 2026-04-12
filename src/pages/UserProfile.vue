@@ -280,7 +280,7 @@ export default {
                         </svg>
                     </div>
                     <h3 class="text-xl font-light">Sin publicaciones aún</h3>
-                    <p class="text-gray-400 text-sm">Cuando {{ user.username }} comparta películas, aparecerán aquí.</p>
+                    <p class="text-gray-400 text-sm">Cuando {{ user.username }} comparta películas o series, aparecerán aquí.</p>
                 </div>
             </div>
         </div>
