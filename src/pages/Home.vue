@@ -2,6 +2,7 @@
 import { supabase } from '../services/supabase'
 import { subscribeToAuthStateChanges } from '../services/auth'
 import MovieCard from '../components/MovieCard.vue'
+import { getVisitsCount } from '../services/visits'
 
 export default {
     name: 'Home',
@@ -19,6 +20,7 @@ export default {
             recentMovies: [],
             suggestedUsers: [],
             loading: false,
+            visitsCount: null,
         }
     },
     methods: {
@@ -57,6 +59,10 @@ export default {
 
         getProfileLink(userId) {
             return this.user.id === userId ? '/mi-perfil' : `/usuario/${userId}`
+        },
+
+        async fetchVisitsCount() {
+            this.visitsCount = await getVisitsCount()
         }
     },
     async mounted() {
@@ -67,6 +73,8 @@ export default {
                 await this.fetchSuggestedUsers()
             }
         })
+
+        await this.fetchVisitsCount()
     }
 }
 </script>
@@ -258,6 +266,16 @@ export default {
                                 Una comunidad dedicada al cine alternativo, independiente y de culto.
                                 Descubre joyas ocultas y conecta con otros amantes del séptimo arte.
                             </p>
+
+                            <div class="mt-4 pt-4 border-t border-gray-800">
+                                <p class="text-xs uppercase tracking-wide text-gray-500 mb-1">Visitas a la web</p>
+                                <p v-if="visitsCount !== null" class="text-2xl font-bold text-[#EFB810]">
+                                    {{ visitsCount }}
+                                </p>
+                                <p v-else class="text-sm text-gray-500">
+                                    Configurá la tabla de visitas en Supabase para ver el contador.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

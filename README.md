@@ -161,6 +161,15 @@ VITE_SUPABASE_ANON_KEY=TU_ANON_PUBLIC_KEY
 - `likes` - Sistema de reacciones
 - `follows` - Sistema de seguimiento entre usuarios
 - `messages` - Chat global
+- `site_visits` - Contador de visitas a la web
+
+### SQL recomendado para contador de visitas
+```sql
+create table if not exists public.site_visits (
+	id bigint generated always as identity primary key,
+	created_at timestamptz not null default now()
+);
+```
 
 ### Storage:
 - `avatars` - Fotos de perfil de usuarios
