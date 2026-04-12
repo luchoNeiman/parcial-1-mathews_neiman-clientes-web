@@ -93,7 +93,7 @@ export default {
 
             <!-- CONTENIDO -->
             <div class="relative z-10 px-4">
-                <h1 class="text-4xl md:text-5xl font-bold mb-4 text-[#EFB810] drop-shadow-md">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 text-[#EFB810] drop-shadow-lg tracking-tight">
                     Underground
                 </h1>
                 <p class="max-w-xl mx-auto text-base text-gray-200 leading-relaxed mb-6">
@@ -159,11 +159,12 @@ export default {
                         </div>
 
                         <!-- Posts reales -->
-                        <div v-else-if="recentMovies.length">
+                        <div v-else-if="recentMovies.length" class="space-y-10">
                             <MovieCard
                                 v-for="movie in recentMovies"
                                 :key="movie.id"
                                 :movie="movie"
+                                size="compact"
                             />
                         </div>
 

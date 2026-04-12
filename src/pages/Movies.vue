@@ -91,7 +91,7 @@ export default {
         </div>
 
         <div class="flex flex-col gap-10 max-w-3xl mx-auto">
-            <MovieCard v-for="movie in filteredMovies" :key="movie.id" :movie="movie" />
+            <MovieCard v-for="movie in filteredMovies" :key="movie.id" :movie="movie" size="compact" />
         </div>
 
         <div v-if="!filteredMovies.length" class="max-w-3xl mx-auto mt-8 text-center text-gray-400">

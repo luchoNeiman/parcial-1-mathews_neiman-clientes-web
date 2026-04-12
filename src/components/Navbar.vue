@@ -33,7 +33,7 @@ export default {
     <nav class="bg-[#121212] border-b border-gray-800 fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-opacity-95">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-4">
             <RouterLink to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <img src="/favicon.png" class="h-8" alt="Logo" />
+                <img src="/favicon.png" class="h-14" alt="Logo" />
                 <span class="self-center text-xl font-semibold whitespace-nowrap text-[#EFB810] hover:text-yellow-400 transition hidden sm:block">
                     Underground
                 </span>
